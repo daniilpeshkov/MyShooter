@@ -8,8 +8,6 @@ public class Player extends TexturedEntity {
 
     RangedWeapon weapon = null;
 
-    Animation animation;
-
     public static float SPEED = 5.0f / 1000;
 
     public Player(float x, float y, float r, int hp, Texture texture) {
@@ -38,7 +36,6 @@ public class Player extends TexturedEntity {
     }
 
     public void shot(GameWorld world) {
-//        System.currentTimeMillis()
         if (weapon != null && weapon.canShot()) {
             Vector3f shooting_pos = new Vector3f(pos.x, pos.y, 0);
             shooting_pos.x +=  (getR() + Bullet.RADIUS + getR() / 8) / 2 * Math.cos(fi);
@@ -47,10 +44,6 @@ public class Player extends TexturedEntity {
                 world.addEntity(entity);
             }
         }
-    }
-
-    public void setAnimation(Animation animation) {
-        this.animation = animation;
     }
 
 }
