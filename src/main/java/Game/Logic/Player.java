@@ -17,8 +17,8 @@ public class Player extends TexturedEntity {
 
 
     public void move(byte direction) {
-        velocity.x = ( -1 * (direction & LEFT) / LEFT + (direction & RIGHT)/ RIGHT) * SPEED;
-        velocity.y = ( -1 * (direction & DOWN) / DOWN + (direction & UP)) / UP * SPEED;
+        velocity.x = (-1 * (direction & LEFT) / LEFT + (direction & RIGHT)/ RIGHT) * SPEED;
+        velocity.y = (-1 * (direction & DOWN) / DOWN + (direction & UP) / UP) * SPEED;
     }
 
 
