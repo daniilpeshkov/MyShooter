@@ -3,6 +3,7 @@ package Main;
 
 import Game.Graphics.Animation;
 import Game.Graphics.Camera;
+import Game.Graphics.GameRenderer;
 import Game.Graphics.Texture;
 import Game.Logic.*;
 import org.joml.Matrix3f;
@@ -45,6 +46,8 @@ public class Main {
 
     private Vector2f cursor_pos;
 
+    float scale = 0.099999999f;
+
     Entity field;
     Entity field2;
 
@@ -84,9 +87,12 @@ public class Main {
             if ( key == GLFW_KEY_UP)
             {
                 Camera.zoomIn();
+                scale *= 1.1;
             }
-            if ( key == GLFW_KEY_DOWN)
+            if ( key == GLFW_KEY_DOWN) {
                 Camera.zoomOut();
+                scale /= 1.1;
+            }
         });
 
         // Get the thread stack and push a new frame
@@ -112,6 +118,7 @@ public class Main {
         glfwShowWindow(window);
 
         GL.createCapabilities();
+        Camera.updateAspectRatio(W, H);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -121,8 +128,6 @@ public class Main {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-        Camera.updateAspectRatio(W, H);
 
         player_tex = Texture.genTexture("src\\main\\resources\\character.png");
         field_tex = Texture.genTexture("src\\main\\resources\\field.png");
@@ -141,34 +146,14 @@ public class Main {
     private void initGame() {
 
         gameWorld = new GameWorld();
-        player = new Player(0,0,1f,5, player_tex);
+        player = new Player(5,1,1f,5, player_tex);
 
         gameWorld.addEntity(player);
-
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,-3, 5, 1.5f,10, 3f/1000.0f,walkingEnemy_tex,new Player[]{player}));
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,-4, 1, 1.5f,10, 3f/1000.0f,walkingEnemy_tex,new Player[]{player}));
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,4, -4, 1.5f,10, 3f/1000.0f,walkingEnemy_tex,new Player[]{player}));
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,1, -7, 1.5f,10, 3f/1000.0f,walkingEnemy_tex,new Player[]{player}));
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,5, -5, 1.5f,10, 3f/1000.0f,walkingEnemy_tex,new Player[]{player}));
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,-4, 3, 1.5f,10, 3f/1000.0f,walkingEnemy_tex,new Player[]{player}));
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,2, 2, 1.5f,10, 3f/1000.0f,walkingEnemy_tex,new Player[]{player}));
-
-
-//        gameWorld.addEntity(new ShootingEnemy(gameWorld, -10,-1, 1, 100,
-//                new RangedWeapon(3, (float) (Math.PI / 4), 0, 500, 1, bullet_tex),
-//                shooter_tex, new Player[]{player}));
-//        gameWorld.addEntity(new ShootingEnemy(gameWorld, -3,-1, 1, 4,
-//                new RangedWeapon(1, 0, 0, 1500, 1, bullet_tex),
-//                shooter_tex, new Player[]{player}));
-//        gameWorld.addEntity(new ShootingEnemy(gameWorld, -1,-4, 1, 4,
-//                new RangedWeapon(1, 0, 0, 1500, 1, bullet_tex),
-//                shooter_tex, new Player[]{player}));
-
 
         WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, worm_tex,
                 new Player[] {player});
 
-        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
+//        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
 
         player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4),0,
                 300,1, new Bullet(0,0,0.3f, 1, 4000, new Vector2f(0,0), bullet_tex)));
@@ -206,9 +191,12 @@ public class Main {
 
         glColor4f(1,1,1,1f);
 
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+
         gameWorld.getEntities().forEach(entity -> {
             if (entity instanceof TexturedEntity) {
-                renderEntity((TexturedEntity) entity);
+                GameRenderer.renderEntity((TexturedEntity) entity, player.getPos());
             }
         });
 
@@ -219,14 +207,11 @@ public class Main {
         glfwSwapBuffers(window); // swap the color buffers
     }
 
+
+
     void renderHUD() {
         heart_tex.bind();
         for (int i = 0; i < player.getHP(); i++){
-
-//            glMatrixMode(GL_MODELVIEW);
-//            glPushMatrix();
-//            glRotatef(10f,0,0,1f);
-//            glScalef(0.5f,1f,0.2f);
 
             glEnable(GL_TEXTURE_2D);
             glBegin(GL_QUADS);
@@ -290,7 +275,6 @@ public class Main {
 
         double[] cursor_x = new double[1], cursor_y = new double[1];
 
-        //counting an angle of player's view
         glfwGetCursorPos(window, cursor_x, cursor_y);
 
         float norm_x, norm_y;
@@ -319,45 +303,6 @@ public class Main {
 
         glTexCoord2f(1,0);
         glVertex2f(x - cursor_size / Camera.getAspectRatio(), y - cursor_size);
-
-        glEnd();
-        glDisable(GL_TEXTURE_2D);
-    }
-
-    void renderEntity(TexturedEntity entity) {
-
-        Matrix3f rotation_matrix = new Matrix3f();
-        rotation_matrix.rotate(entity.getFi(), 0,0,1,rotation_matrix);
-
-        Vector3f pos = entity.getPos();
-
-        Vector3f p1 = Camera.transform(entity.getPos(), player.getPos(), new Vector3f(pos.x - entity.getR()/2.0f, pos.y + entity.getR()/2.0f, 0),rotation_matrix);
-        Vector3f p2 = Camera.transform(entity.getPos(),player.getPos(), new Vector3f(pos.x + entity.getR()/2.0f, pos.y + entity.getR()/2.0f, 0),rotation_matrix);
-        Vector3f p3 = Camera.transform(entity.getPos(),player.getPos(), new Vector3f(pos.x + entity.getR()/2.0f, pos.y - entity.getR()/2.0f, 0),rotation_matrix);
-        Vector3f p4 = Camera.transform(entity.getPos(),player.getPos(), new Vector3f(pos.x - entity.getR()/2.0f, pos.y - entity.getR()/2.0f, 0),rotation_matrix);
-
-
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glShadeModel(GL_SMOOTH);
-
-
-        glColor3f(1f, 1.0f, 1f);
-
-        glEnable(GL_TEXTURE_2D);
-        entity.bindTexture();
-        glBegin(GL_QUADS);
-
-        glTexCoord2f(0,0);
-        glVertex2f(p1.x, p1.y);
-
-        glTexCoord2f(0,1);
-        glVertex2f(p2.x, p2.y);
-
-        glTexCoord2f(1,1);
-        glVertex2f(p3.x, p3.y);
-
-        glTexCoord2f(1,0);
-        glVertex2f(p4.x, p4.y);
 
         glEnd();
         glDisable(GL_TEXTURE_2D);
