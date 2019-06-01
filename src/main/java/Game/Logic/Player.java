@@ -8,7 +8,19 @@ public class Player extends TexturedEntity {
 
     RangedWeapon weapon = null;
 
-    public static float SPEED = 5.0f / 1000;
+    private static final float SPEED = 4.0f / 1000f;
+
+    public static final byte UP = 0b1;
+    public static final byte DOWN = 0b10;
+    public static final byte LEFT = 0b100;
+    public static final byte RIGHT = 0b1000;
+
+
+    public void move(byte direction) {
+        velocity.x = ( -1 * (direction & LEFT) / LEFT + (direction & RIGHT)/ RIGHT) * SPEED;
+        velocity.y = ( -1 * (direction & DOWN) / DOWN + (direction & UP)) / UP * SPEED;
+    }
+
 
     public Player(float x, float y, float r, int hp, Texture texture) {
         super(x, y, r, texture);

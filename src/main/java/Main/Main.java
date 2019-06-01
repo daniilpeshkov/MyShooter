@@ -1,12 +1,11 @@
 package Main;
 
 
+import Game.Graphics.Animation;
 import Game.Graphics.Camera;
 import Game.Graphics.GameRenderer;
 import Game.Graphics.Texture;
 import Game.Logic.*;
-import Game.Network.ClientService;
-import Game.Network.Server;
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -16,8 +15,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -25,6 +22,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
+
 public class Main {
 
     private static int H = 800;
@@ -53,13 +51,9 @@ public class Main {
     Entity field;
     Entity field2;
 
+
     // The window handle
     private long window;
-
-    private BufferedReader input;
-    boolean isOnline = false;
-    private ClientService clientService;
-
 
     public void run() throws InterruptedException {
         init();
@@ -159,7 +153,7 @@ public class Main {
         WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, worm_tex,
                 new Player[] {player});
 
-//        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
+        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
 
         player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4),0,
                 300,1, new Bullet(0,0,0.3f, 1, 4000, new Vector2f(0,0), bullet_tex)));
@@ -169,7 +163,6 @@ public class Main {
         long start_time;
         long last_time;
 
-        new ConsoleEvent().start();
         start_time = System.currentTimeMillis();
         render();
         processInput();
@@ -185,30 +178,6 @@ public class Main {
 
             last_time = start_time;
             glfwPollEvents();
-        }
-    }
-
-    private class ConsoleEvent extends Thread {
-        @Override
-        public void run() {
-            while (!glfwWindowShouldClose(window)) {
-                String string;
-
-                try {
-                    string = input.readLine();
-
-                    if (string.equals("/server start")) {
-                        Server.start();
-                    } else if (string.contains("/connect")) {
-                        String[] str = string.split(" ");
-                        String[] s = str[1].split(":");
-                        clientService = new ClientService(s[0], Integer.parseInt(s[1]));
-                        isOnline = true;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -265,34 +234,26 @@ public class Main {
     }
 
     void processInput() {
-        boolean moving = false;
+
+        byte direction = 0;
         int state = glfwGetKey(window, GLFW_KEY_W);
         if (state == GLFW_PRESS) {
-            player.getVelocity().y = Player.SPEED;
-            moving = true;
-        } 
+            direction |= Player.UP;
+        }
 
         state = glfwGetKey(window, GLFW_KEY_S);
         if (state == GLFW_PRESS) {
-            player.getVelocity().y = -Player.SPEED;
-            moving = true;
+            direction |= Player.DOWN;
         }
-
-        if (!moving) player.getVelocity().y = 0;
-
-        moving = false;
         state = glfwGetKey(window, GLFW_KEY_A);
         if (state == GLFW_PRESS) {
-            player.getVelocity().x = -Player.SPEED;
-            moving = true;}
-
+            direction |= Player.LEFT;
+        }
         state = glfwGetKey(window, GLFW_KEY_D);
         if (state == GLFW_PRESS) {
-            player.getVelocity().x = Player.SPEED;
-            moving = true;
+            direction |= Player.RIGHT;
         }
-        if (!moving) player.getVelocity().x = 0;
-
+        player.move(direction);
         state = glfwGetKey(window, GLFW_KEY_SPACE);
         if (state == GLFW_PRESS) {
             player.shot(gameWorld);
