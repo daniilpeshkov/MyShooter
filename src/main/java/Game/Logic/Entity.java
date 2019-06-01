@@ -12,23 +12,24 @@ public abstract class Entity {
     protected boolean shouldExist = true;
     protected int healthPoint = 1;
 
-    public boolean shouldExist() {
-        return shouldExist;
-    }
-
     public Entity(float x, float y, float r) {
         pos = new Vector3f(x, y, 0);
         this.r = r;
         velocity = new Vector2f();
     }
 
-    public void setFi(float fi) {
-        this.fi = fi;
+    public boolean shouldExist() {
+        return shouldExist;
     }
 
     public float getFi() {
         return fi;
     }
+
+    public void setFi(float fi) {
+        this.fi = fi;
+    }
+    public void setDeciFi(int fi) { this.fi = fi / 10000f; }
 
     public float getX() {
         return pos.x;
@@ -38,16 +39,23 @@ public abstract class Entity {
         return pos.y;
     }
 
-    public void moveX(float delta) {pos.x += delta;}
-    public void moveY(float delta) {pos.y += delta;}
+    public void moveX(float delta) {
+        pos.x += delta;
+    }
+
+    public void moveY(float delta) {
+        pos.y += delta;
+    }
 
     public float getR() {
         return r;
     }
 
-    public Vector3f getPos(){ return pos;}
+    public Vector3f getPos() {
+        return pos;
+    }
 
-    public void setPos(Vector3f pos){
+    public void setPos(Vector3f pos) {
         this.pos = pos;
     }
 
@@ -69,7 +77,7 @@ public abstract class Entity {
         }
     }
 
-    public int getHP(){
+    public int getHP() {
         return healthPoint;
     }
 

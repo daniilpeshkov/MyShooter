@@ -14,11 +14,9 @@ public class GameWorld {
     }
 
 
-
-
     public void update(int delta_t) {
         List<Entity> entitiesToRemove = new ArrayList<>();
-        for (int i =0; i < entities.size(); i++) {
+        for (int i = 0; i < entities.size(); i++) {
             Entity entity = entities.get(i);
             if (!entity.shouldExist()) {
                 entitiesToRemove.add(entity);
@@ -39,16 +37,16 @@ public class GameWorld {
 
                     if (distance < (e1.r + e2.r) / 2.0f) {
                         float fi = (float) Math.atan2(e1.pos.y - e2.pos.y, e1.pos.x - e2.pos.x);
-                        float r =  (e1.r + e2.r) / 2 - distance;
-                            e1.pos.x += r / 2 * Math.cos(fi);
-                            e1.pos.y += r / 2 * Math.sin(fi);
+                        float r = (e1.r + e2.r) / 2 - distance;
+                        e1.pos.x += r / 2 * Math.cos(fi);
+                        e1.pos.y += r / 2 * Math.sin(fi);
 
-                            e2.pos.x -= r / 2 * Math.cos(fi);
-                            e2.pos.y -= r / 2 * Math.sin(fi);
+                        e2.pos.x -= r / 2 * Math.cos(fi);
+                        e2.pos.y -= r / 2 * Math.sin(fi);
                     }
                 }
 
-                if (e1.pos.distance(e2.pos) < (e1.getR() + e2.getR())/ 2) {
+                if (e1.pos.distance(e2.pos) < (e1.getR() + e2.getR()) / 2) {
                     e1.collidesWith(e2);
                     e2.collidesWith(e1);
                     if (!e1.shouldExist) entitiesToRemove.add(e1);
@@ -57,11 +55,11 @@ public class GameWorld {
             }
         }
 
-        for (Entity entity: entitiesToRemove) {
+        for (Entity entity : entitiesToRemove) {
             entities.remove(entity);
         }
 
-        for (int i =0; i < entities.size(); i++) {
+        for (int i = 0; i < entities.size(); i++) {
             Entity entity = entities.get(i);
             entity.moveY(entity.getVelocity().y * delta_t);
             entity.moveX(entity.getVelocity().x * delta_t);

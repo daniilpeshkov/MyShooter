@@ -1,20 +1,26 @@
 package Game.Network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import Game.Logic.GameWorld;
+import Game.Logic.Player;
+
+import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler extends Thread {
     private Socket socket;
-    private DataInputStream in;
-    private DataOutputStream out;
+    private InputStream in;
+    private OutputStream out;
+    private static Player player = new Player(5, 1, 1f, 5, Main.Main.getPlayer_tex());
 
-    public ClientHandler(Socket socket) throws IOException {
+    private byte[] bytes;
+
+    public ClientHandler(Socket socket, GameWorld gameWorld) throws IOException {
         this.socket = socket;
 
-        in = new DataInputStream (socket.getInputStream());
-        out = new DataOutputStream (socket.getOutputStream());
+        in = socket.getInputStream();
+        out = socket.getOutputStream();
+
+        gameWorld.addEntity(player);
 
         start();
     }
@@ -22,20 +28,12 @@ public class ClientHandler extends Thread {
     @Override
     public void run() {
         try {
-            String string;
+            in.read(bytes);
 
-            while (true) {
-                string = in.readUTF();
-                if (string.equals("stop")) {
-                    this.stopService();
-                    break;
-                }
-
-                System.out.println("Client " + socket.getInetAddress() + ":" + socket.getLocalPort() + " says: " + string);
-            }
+            player.move(bytes[0]);
+            player.setDeciFi(bytes[1]);
         } catch (IOException e) {
             e.printStackTrace();
-            this.stopService();
         }
     }
 

@@ -7,12 +7,9 @@ import org.joml.Vector3f;
 public class RangedWeapon {
 
     protected int cooldown; //millis before next hit
-
-    private int passedFromLastAttack = 0;
-
     protected boolean canShot = true;
     protected int damage = 1;
-
+    private int passedFromLastAttack = 0;
     private int passedFrpmLastShot = 0;
 
     private int countOfBarrel;
@@ -38,7 +35,7 @@ public class RangedWeapon {
             if (countOfBarrel == 1) {
                 Vector2f velocity = new Vector2f((float) (Bullet.SPEED * Math.cos(angle)),
                         (float) (Bullet.SPEED * Math.sin(angle)));
-                bullets[0] = new Bullet(pos.x, pos.y, ammo.r, damage,ammo.ttl, velocity, ammo.texture);
+                bullets[0] = new Bullet(pos.x, pos.y, ammo.r, damage, ammo.ttl, velocity, ammo.texture);
             } else {
                 float d_angle = sprayAngle / (countOfBarrel - 1);
                 float cur_angle = angle - sprayAngle / 2;

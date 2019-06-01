@@ -1,20 +1,21 @@
 package Main;
 
 
-import Game.Graphics.Animation;
 import Game.Graphics.Camera;
 import Game.Graphics.GameRenderer;
 import Game.Graphics.Texture;
 import Game.Logic.*;
-import org.joml.Matrix3f;
+import Game.Network.ClientService;
+import Game.Network.Server;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
-
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -29,31 +30,31 @@ public class Main {
     private static int W = 920;
     float cursor_size = 0.02f;
     float heart_size = 0.09f;
+    GameWorld gameWorld;
+    float scale = 0.099999999f;
+    Entity field;
+    Entity field2;
+    boolean isOnline = false;
     private float FPS = 60;
     private long millis_per_frame = (long) ((1.0f / 30.0f) * 1000.0f);
-    GameWorld gameWorld;
-
     private Player player;
-
     private Texture cursor_tex;
-    private Texture player_tex;
+    private static Texture player_tex;
     private Texture field_tex;
     private Texture bullet_tex;
     private Texture walkingEnemy_tex;
     private Texture shooter_tex;
     private Texture heart_tex;
     private Texture worm_tex;
-
     private Vector2f cursor_pos;
-
-    float scale = 0.099999999f;
-
-    Entity field;
-    Entity field2;
-
-
     // The window handle
     private long window;
+    private BufferedReader input;
+    private ClientService clientService;
+
+    public static void main(String[] args) throws InterruptedException {
+        new Main().run();
+    }
 
     public void run() throws InterruptedException {
         init();
@@ -70,7 +71,7 @@ public class Main {
 
         GLFWErrorCallback.createPrint(System.err).set();
 
-        if ( !glfwInit() )
+        if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
 
         glfwDefaultWindowHints();
@@ -78,25 +79,24 @@ public class Main {
 
 
         window = glfwCreateWindow(W, H, "test", NULL, NULL);
-        if ( window == NULL )
+        if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
                 glfwSetWindowShouldClose(window, true);
-            if ( key == GLFW_KEY_UP)
-            {
+            if (key == GLFW_KEY_UP) {
                 Camera.zoomIn();
                 scale *= 1.1;
             }
-            if ( key == GLFW_KEY_DOWN) {
+            if (key == GLFW_KEY_DOWN) {
                 Camera.zoomOut();
                 scale /= 1.1;
             }
         });
 
         // Get the thread stack and push a new frame
-        try ( MemoryStack stack = stackPush() ) {
+        try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1);
             IntBuffer pHeight = stack.mallocInt(1);
 
@@ -143,32 +143,39 @@ public class Main {
         initGame();
     }
 
+    public static Texture getPlayer_tex() {
+        return player_tex;
+    }
+
     private void initGame() {
 
         gameWorld = new GameWorld();
-        player = new Player(5,1,1f,5, player_tex);
+        player = new Player(5, 1, 1f, 5, player_tex);
 
         gameWorld.addEntity(player);
 
-        WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, worm_tex,
-                new Player[] {player});
+//        WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, worm_tex,
+//                new Player[] {player});
+//
+//        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
 
-        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
-
-        player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4),0,
-                300,1, new Bullet(0,0,0.3f, 1, 4000, new Vector2f(0,0), bullet_tex)));
+        player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4), 0,
+                300, 1, new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), bullet_tex)));
     }
 
     private void loop() {
         long start_time;
         long last_time;
 
+        input = new BufferedReader(new InputStreamReader(System.in));
+        new ConsoleEvent().start();
+
         start_time = System.currentTimeMillis();
         render();
         processInput();
         last_time = start_time;
 
-        while ( !glfwWindowShouldClose(window) ) {
+        while (!glfwWindowShouldClose(window)) {
 
             start_time = System.currentTimeMillis();
 
@@ -187,9 +194,9 @@ public class Main {
 
     void render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-        glClearColor(1,1,1,1);
+        glClearColor(1, 1, 1, 1);
 
-        glColor4f(1,1,1,1f);
+        glColor4f(1, 1, 1, 1f);
 
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
@@ -207,25 +214,23 @@ public class Main {
         glfwSwapBuffers(window); // swap the color buffers
     }
 
-
-
     void renderHUD() {
         heart_tex.bind();
-        for (int i = 0; i < player.getHP(); i++){
+        for (int i = 0; i < player.getHP(); i++) {
 
             glEnable(GL_TEXTURE_2D);
             glBegin(GL_QUADS);
 
-            glTexCoord2f(0,0);
+            glTexCoord2f(0, 0);
             glVertex2f(-1 + i * heart_size / Camera.getAspectRatio(), 1);
 
-            glTexCoord2f(0,1);
+            glTexCoord2f(0, 1);
             glVertex2f(-1 + (i + 1) * heart_size / Camera.getAspectRatio(), 1);
 
-            glTexCoord2f(1,1);
+            glTexCoord2f(1, 1);
             glVertex2f(-1 + (i + 1) * heart_size / Camera.getAspectRatio(), 1 - heart_size);
 
-            glTexCoord2f(1,0);
+            glTexCoord2f(1, 0);
             glVertex2f(-1 + i * heart_size / Camera.getAspectRatio(), 1 - heart_size);
             glEnd();
             glPopMatrix();
@@ -234,13 +239,12 @@ public class Main {
     }
 
     void processInput() {
-
         byte direction = 0;
+
         int state = glfwGetKey(window, GLFW_KEY_W);
         if (state == GLFW_PRESS) {
             direction |= Player.UP;
         }
-
         state = glfwGetKey(window, GLFW_KEY_S);
         if (state == GLFW_PRESS) {
             direction |= Player.DOWN;
@@ -253,7 +257,10 @@ public class Main {
         if (state == GLFW_PRESS) {
             direction |= Player.RIGHT;
         }
+
         player.move(direction);
+        if (isOnline) clientService.moveNude(direction);
+
         state = glfwGetKey(window, GLFW_KEY_SPACE);
         if (state == GLFW_PRESS) {
             player.shot(gameWorld);
@@ -273,7 +280,12 @@ public class Main {
         norm_x = (float) ((cursor_x[0] - W / 2) / W * 2.0f);
         norm_y = (float) ((H / 2 - cursor_y[0]) / H * 2.0f);
 
-        player.setFi((float) Math.atan2(norm_y, norm_x* Camera.getAspectRatio()));
+        // crutch for sending angle though network
+        int angle = (int) (10000 * Math.atan2(norm_y, norm_x * Camera.getAspectRatio()));
+
+        player.setDeciFi(angle);
+        if (isOnline) clientService.angleNude(angle);
+
         cursor_pos.x = norm_x;
         cursor_pos.y = norm_y;
     }
@@ -283,24 +295,44 @@ public class Main {
 
         glEnable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
-        glTexCoord2f(0,0);
-        glVertex2f(x - cursor_size / Camera.getAspectRatio() , y + cursor_size);
+        glTexCoord2f(0, 0);
+        glVertex2f(x - cursor_size / Camera.getAspectRatio(), y + cursor_size);
 
-        glTexCoord2f(0,1);
+        glTexCoord2f(0, 1);
         glVertex2f(x + cursor_size / Camera.getAspectRatio(), y + cursor_size);
 
-        glTexCoord2f(1,1);
+        glTexCoord2f(1, 1);
         glVertex2f(x + cursor_size / Camera.getAspectRatio(), y - cursor_size);
 
-        glTexCoord2f(1,0);
+        glTexCoord2f(1, 0);
         glVertex2f(x - cursor_size / Camera.getAspectRatio(), y - cursor_size);
 
         glEnd();
         glDisable(GL_TEXTURE_2D);
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        new Main().run();
+    private class ConsoleEvent extends Thread {
+        @Override
+        public void run() {
+            while (!glfwWindowShouldClose(window)) {
+                String string;
+
+                try {
+                    string = input.readLine();
+
+                    if (string.equals("/server start")) {
+                        Server.start(gameWorld);
+                    } else if (string.contains("/connect")) {
+                        String[] str = string.split(" ");
+                        String[] s = str[1].split(":");
+                        clientService = new ClientService(s[0], Integer.parseInt(s[1]));
+                        isOnline = true;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

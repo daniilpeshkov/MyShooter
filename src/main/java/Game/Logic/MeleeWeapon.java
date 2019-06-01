@@ -10,5 +10,4 @@ public class MeleeWeapon extends RangedWeapon {
     }
 
 
-
 }

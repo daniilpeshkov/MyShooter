@@ -3,6 +3,7 @@ package Game.Graphics;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import org.lwjgl.BufferUtils;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
@@ -22,8 +23,42 @@ public class Texture {
     public Texture() {
         id = 0;
     }
+
     public Texture(int id) {
         this.id = id;
+    }
+
+    @Deprecated
+    public Texture(String fileName) {
+        BufferedImage bi;
+        try {
+            bi = ImageIO.read(new File(fileName));
+            width = bi.getWidth();
+            height = bi.getHeight();
+            ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
+
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    Color c = new Color(bi.getRGB(x, y), true);
+                    pixels.put((byte) (c.getRed() - 128));
+                    pixels.put((byte) (c.getGreen() - 128));
+                    pixels.put((byte) (c.getBlue() - 128));
+                    pixels.put((byte) (c.getAlpha() - 128));
+                }
+            }
+
+            pixels.flip();
+
+            id = glGenTextures();
+
+            glBindTexture(GL_TEXTURE_2D, id);
+
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_BYTE, pixels);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Texture genTexture(String fileName) {
@@ -68,39 +103,6 @@ public class Texture {
         glGenerateMipmap(GL_TEXTURE_2D);
 
         return new Texture(id);
-    }
-
-    @Deprecated
-    public Texture(String fileName) {
-        BufferedImage bi;
-        try {
-            bi = ImageIO.read(new File(fileName));
-            width = bi.getWidth();
-            height = bi.getHeight();
-            ByteBuffer pixels = BufferUtils.createByteBuffer(width * height * 4);
-
-            for (int x = 0; x <width ; x++) {
-                for (int y = 0; y < height; y++) {
-                    Color c = new Color(bi.getRGB(x, y), true);
-                    pixels.put((byte) (c.getRed() - 128));
-                    pixels.put((byte) (c.getGreen() - 128));
-                    pixels.put((byte) (c.getBlue() - 128));
-                    pixels.put((byte) (c.getAlpha() - 128));
-                }
-            }
-
-            pixels.flip();
-
-            id = glGenTextures();
-
-            glBindTexture(GL_TEXTURE_2D, id);
-
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_BYTE, pixels);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void bind() {

@@ -7,7 +7,6 @@ import org.joml.Vector3f;
 public class Camera {
 
 
-
     private static float scale = 1.0f;
 
     private static float d_scale = 1.05f;
@@ -25,7 +24,7 @@ public class Camera {
     }
 
     public static void zoomIn() {
-        if(scale / d_scale >= MIN_SCALE) {
+        if (scale / d_scale >= MIN_SCALE) {
             scale /= d_scale;
         }
     }

@@ -5,17 +5,16 @@ import org.joml.Vector2f;
 
 public class Bullet extends TexturedEntity {
 
-    private int time_lived = 0;
-    protected int ttl;
-    protected int damage;
-
     public static float SPEED = 10.0f / 1000;
     public static float RADIUS = 0.3f;
     public static int TTL = 3000;
     public static int COUNT_OF_PENETRATIONS = 1;
+    protected int ttl;
+    protected int damage;
+    private int time_lived = 0;
 
     public Bullet(float x, float y, float r, int damage, int ttl/*in millis*/, Vector2f velocity, Texture texture) {
-        super(x, y,r , texture);
+        super(x, y, r, texture);
         this.ttl = ttl;
         this.velocity = velocity;
         this.damage = damage;
@@ -23,7 +22,7 @@ public class Bullet extends TexturedEntity {
     }
 
     @Override
-    public void update(int dTime){
+    public void update(int dTime) {
         time_lived += dTime;
         if (time_lived >= ttl) {
             shouldExist = false;

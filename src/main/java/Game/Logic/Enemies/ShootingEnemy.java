@@ -1,6 +1,7 @@
-package Game.Logic;
+package Game.Logic.Enemies;
 
 import Game.Graphics.Texture;
+import Game.Logic.*;
 import org.joml.Vector3f;
 
 public class ShootingEnemy extends Enemy {
@@ -10,19 +11,19 @@ public class ShootingEnemy extends Enemy {
     public static float RANG_FOR_SHOT = 3;
 
     public ShootingEnemy(GameWorld world, float x, float y, float r, int hp, RangedWeapon weapon, Texture texture, Player[] players) {
-        super(world,x, y, r, hp, texture, players);
+        super(world, x, y, r, hp, texture, players);
         this.weapon = weapon;
     }
 
     @Override
     public void update(int dTime) {
         weapon.update(dTime);
-        float dist = players[0].pos.distance(pos);
+        float dist = players[0].getPos().distance(pos);
         if (dist <= RANG_FOR_CHARGE) {
-            float angle = (float) Math.atan2(players[0].pos.y - pos.y, players[0].pos.x - pos.x);
+            float angle = (float) Math.atan2(players[0].getPos().y - pos.y, players[0].getPos().x - pos.x);
 
 
-            if (dist < RANG_FOR_SHOT ) {
+            if (dist < RANG_FOR_SHOT) {
                 this.velocity.x = -(float) (SPEED * Math.cos(angle));
                 this.velocity.y = -(float) (SPEED * Math.sin(angle));
             } else if (dist > RANG_FOR_SHOT) {
@@ -36,12 +37,12 @@ public class ShootingEnemy extends Enemy {
             fi = angle;
 
             Vector3f shooting_pos = new Vector3f(pos.x, pos.y, 0);
-            shooting_pos.x +=  (players[0].getR() + Bullet.RADIUS) * Math.cos(fi);
+            shooting_pos.x += (players[0].getR() + Bullet.RADIUS) * Math.cos(fi);
             shooting_pos.y += (players[0].getR() + Bullet.RADIUS) * Math.sin(fi);
 
 
             if (weapon != null && weapon.canShot()) {
-                for(Entity entity :weapon.shot(shooting_pos, fi)){
+                for (Entity entity : weapon.shot(shooting_pos, fi)) {
                     world.addEntity(entity);
                 }
             }

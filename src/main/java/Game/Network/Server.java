@@ -1,5 +1,7 @@
 package Game.Network;
 
+import Game.Logic.GameWorld;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,7 +12,7 @@ public class Server {
 
     public static ArrayList<ClientHandler> clientList = new ArrayList<>();
 
-    public static void start() throws IOException {
+    public static void start(GameWorld gameWorld) throws IOException {
         ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
 
         System.out.println("Server Started");
@@ -22,7 +24,7 @@ public class Server {
                 System.out.println("Waiting for connections...");
                 Socket socket = serverSocket.accept();
                 System.out.println("Connection accepted");
-                clientList.add(new ClientHandler(socket));
+                clientList.add(new ClientHandler(socket, gameWorld));
             }
         } finally {
             serverSocket.close();

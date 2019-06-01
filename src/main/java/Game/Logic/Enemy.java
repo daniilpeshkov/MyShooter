@@ -5,7 +5,7 @@ import Game.Graphics.Texture;
 public abstract class Enemy extends TexturedEntity {
 
     protected Player[] players;
-    RangedWeapon weapon = null;
+    protected RangedWeapon weapon = null;
     protected GameWorld world;
     protected float speed = 0;
 
