@@ -6,7 +6,7 @@ import org.joml.Vector2f;
 public class Bullet extends TexturedEntity {
 
     private int time_lived = 0;
-    private int ttl;
+    protected int ttl;
     protected int damage;
 
     public static float SPEED = 10.0f / 1000;
@@ -14,7 +14,7 @@ public class Bullet extends TexturedEntity {
     public static int TTL = 3000;
     public static int COUNT_OF_PENETRATIONS = 1;
 
-    public Bullet(float x, float y, float r, int damage, Texture texture, int ttl/*in millis*/, Vector2f velocity) {
+    public Bullet(float x, float y, float r, int damage, int ttl/*in millis*/, Vector2f velocity, Texture texture) {
         super(x, y,r , texture);
         this.ttl = ttl;
         this.velocity = velocity;
@@ -23,10 +23,18 @@ public class Bullet extends TexturedEntity {
     }
 
     @Override
-    public void update(int delta_time){
-        time_lived += delta_time;
+    public void update(int dTime){
+        time_lived += dTime;
         if (time_lived >= ttl) {
             shouldExist = false;
+        }
+    }
+
+    @Override
+    public void collidesWith(Entity entity) {
+        if (!(entity instanceof Bullet)) {
+            addHP(-1);
+            entity.addHP(-damage);
         }
     }
 }

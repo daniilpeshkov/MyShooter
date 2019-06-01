@@ -17,7 +17,6 @@ public class GameWorld {
 
 
     public void update(int delta_t) {
-
         List<Entity> entitiesToRemove = new ArrayList<>();
         for (int i =0; i < entities.size(); i++) {
             Entity entity = entities.get(i);
@@ -35,27 +34,23 @@ public class GameWorld {
                 Entity e2 = entities.get(j);
 
                 if (!(e1 instanceof Bullet) && !(e2 instanceof Bullet)) {
-                    if (e1.pos.distance(e2.pos) < (e1.getR() + e2.getR()) / 2.0f) {
+
+                    float distance = e1.pos.distance(e2.pos);
+
+                    if (distance < (e1.r + e2.r) / 2.0f) {
                         float fi = (float) Math.atan2(e1.pos.y - e2.pos.y, e1.pos.x - e2.pos.x);
-                        if (!(e1 instanceof Player)) {
-                            e1.velocity.x += RunningEnemy.SPEED * Math.cos(fi);
-                            e1.velocity.y += RunningEnemy.SPEED * Math.sin(fi);
-                        }
-                        if (!(e2 instanceof Player)) {
-                        e2.velocity.x -= RunningEnemy.SPEED * Math.cos(fi);
-                        e2.velocity.y -= RunningEnemy.SPEED * Math.sin(fi);
-                        }
+                        float r =  (e1.r + e2.r) / 2 - distance;
+                            e1.pos.x += r / 2 * Math.cos(fi);
+                            e1.pos.y += r / 2 * Math.sin(fi);
+
+                            e2.pos.x -= r / 2 * Math.cos(fi);
+                            e2.pos.y -= r / 2 * Math.sin(fi);
                     }
                 }
 
                 if (e1.pos.distance(e2.pos) < (e1.getR() + e2.getR())/ 2) {
-                    if (e1 instanceof Bullet && !(e2 instanceof Bullet)) {
-                        e1.addHP(-1);
-                        e2.addHP(-((Bullet)e1).damage);
-                    } else if (e2 instanceof Bullet && !(e1 instanceof Bullet)) {
-                        e2.addHP(-1);
-                        e1.addHP(-((Bullet)e2).damage);
-                    }
+                    e1.collidesWith(e2);
+                    e2.collidesWith(e1);
                     if (!e1.shouldExist) entitiesToRemove.add(e1);
                     if (!e2.shouldExist) entitiesToRemove.add(e2);
                 }

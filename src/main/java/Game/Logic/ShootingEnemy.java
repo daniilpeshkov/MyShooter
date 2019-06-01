@@ -15,8 +15,8 @@ public class ShootingEnemy extends Enemy {
     }
 
     @Override
-    public void update(int delta_time) {
-        weapon.update(delta_time);
+    public void update(int dTime) {
+        weapon.update(dTime);
         float dist = players[0].pos.distance(pos);
         if (dist <= RANG_FOR_CHARGE) {
             float angle = (float) Math.atan2(players[0].pos.y - pos.y, players[0].pos.x - pos.x);
@@ -50,6 +50,11 @@ public class ShootingEnemy extends Enemy {
             this.velocity.x = 0;
             this.velocity.y = 0;
         }
+    }
+
+    @Override
+    public void collidesWith(Entity entity) {
+
     }
 
     @Override

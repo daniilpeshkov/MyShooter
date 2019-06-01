@@ -171,7 +171,7 @@ public class Main {
         WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
 
         player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4),0,
-                300,1,bullet_tex));
+                300,1, new Bullet(0,0,0.3f, 1, 4000, new Vector2f(0,0), bullet_tex)));
     }
 
     private void loop() {

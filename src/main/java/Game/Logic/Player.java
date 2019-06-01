@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 
 public class Player extends TexturedEntity {
 
-    Weapon weapon = null;
+    RangedWeapon weapon = null;
 
     Animation animation;
 
@@ -24,11 +24,16 @@ public class Player extends TexturedEntity {
         }
     }
 
-    public void equipWeapon(Weapon weapon) {
+    @Override
+    public void collidesWith(Entity entity) {
+
+    }
+
+    public void equipWeapon(RangedWeapon weapon) {
         this.weapon = weapon;
     }
 
-    public Weapon getWeapon() {
+    public RangedWeapon getWeapon() {
         return weapon;
     }
 

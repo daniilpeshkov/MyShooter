@@ -5,7 +5,7 @@ import Game.Graphics.Texture;
 public abstract class Enemy extends TexturedEntity {
 
     protected Player[] players;
-    Weapon weapon = null;
+    RangedWeapon weapon = null;
     protected GameWorld world;
     protected float speed = 0;
 
@@ -24,11 +24,11 @@ public abstract class Enemy extends TexturedEntity {
         this.speed = speed;
     }
 
-    public void equipWeapon(Weapon weapon) {
+    public void equipWeapon(RangedWeapon weapon) {
         this.weapon = weapon;
     }
 
-    public Weapon getWeapon() {
+    public RangedWeapon getWeapon() {
         return weapon;
     }
 

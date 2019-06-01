@@ -1,20 +1,22 @@
 package Game.Logic;
 
 import Game.Graphics.Texture;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class RunningEnemy extends Enemy {
-    public static float SPEED = 4.0f / 1000;
+
     public static float RANG_FOR_CHARGE = 20;
 
     public RunningEnemy(GameWorld world, float x, float y, float r, int hp, float speed, Texture texture, Player[] players) {
         super(world, x, y, r, hp, speed, texture, players);
-        weapon = new RangedWeapon(1,0,0,2000,1,new Texture());
+        weapon = new MeleeWeapon(0.1f,500,1,
+                new Bullet(0,0,0.3f, 1, 4000, new Vector2f(0,0),new Texture()));
     }
 
     @Override
-    public void update(int delta_time) {
-        weapon.update(delta_time);
+    public void update(int dTime) {
+        weapon.update(dTime);
 
         float dist = players[0].pos.distance(pos);
         if (dist <= (players[0].getR() + getR()) / 2 ) {
@@ -31,6 +33,11 @@ public class RunningEnemy extends Enemy {
         } else {
             stop();
         }
+    }
+
+    @Override
+    public void collidesWith(Entity entity) {
+
     }
 
     @Override

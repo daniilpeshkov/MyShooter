@@ -19,7 +19,7 @@ public class WormSegment extends Enemy {
     }
 
     @Override
-    public void update(int delta_time) {
+    public void update(int dTime) {
             if (previousSegment != null) {
             if (!previousSegment.shouldExist) {
                 previousSegment = null;
@@ -31,6 +31,11 @@ public class WormSegment extends Enemy {
         } else {
             follow(players[0]);
         }
+
+    }
+
+    @Override
+    public void collidesWith(Entity entity) {
 
     }
 

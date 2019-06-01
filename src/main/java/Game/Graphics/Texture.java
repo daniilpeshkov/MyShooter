@@ -3,10 +3,7 @@ package Game.Graphics;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import org.lwjgl.BufferUtils;
-
-import static jdk.xml.internal.SecuritySupport.getResourceAsStream;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.GL_BGR;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 import javax.imageio.ImageIO;

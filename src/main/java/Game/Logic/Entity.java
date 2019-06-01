@@ -51,7 +51,7 @@ public abstract class Entity {
         this.pos = pos;
     }
 
-    public abstract void update(int delta_time);
+    public abstract void update(int dTime);
 
     public void setVelocity(float x, float y) {
         velocity.x = x;
@@ -72,4 +72,7 @@ public abstract class Entity {
     public int getHP(){
         return healthPoint;
     }
+
+    public abstract void collidesWith(Entity entity);
+
 }
