@@ -1,5 +1,7 @@
 package Game.Network;
 
+import java.nio.ByteBuffer;
+
 public class BitsFormatHandler {
     public final static int x = 1;
     public final static int y = 5;
@@ -10,24 +12,28 @@ public class BitsFormatHandler {
     public final static int pFi = 1;
 
     public static void writeFloatBits(float f, byte[] bytes, int begin) {
-        int number = Float.floatToIntBits(f);
+        byte[] temp = ByteBuffer.allocate(4).putFloat(f).array();
 
-        writeIntBits(number, bytes, begin);
+        bytes[begin] = temp[0];
+        bytes[begin + 1] = temp[1];
+        bytes[begin + 2] = temp[2];
+        bytes[begin + 3] = temp[3];
     }
 
     public static float readFloatBits(byte bytes[], int begin) {
-        return Float.intBitsToFloat(readIntBits(bytes, begin));
+        return ByteBuffer.wrap(bytes, begin, 4).getFloat();
     }
 
     public static void writeIntBits(int number, byte[] bytes, int begin) {
-        bytes[begin] = (byte) (number >> 24);
-        bytes[begin + 1] = (byte) (number >> 16);
-        bytes[begin + 2] = (byte) (number >> 8);
-        bytes[begin + 3] = (byte) number;
+        byte[] temp = ByteBuffer.allocate(4).putInt(number).array();
+
+        bytes[begin] = temp[0];
+        bytes[begin + 1] = temp[1];
+        bytes[begin + 2] = temp[2];
+        bytes[begin + 3] = temp[3];
     }
 
     public static int readIntBits(byte bytes[], int begin) {
-        return bytes[begin] << 24 | bytes[begin + 1] << 16 |
-                bytes[begin + 2] << 8 | bytes[begin + 3];
+        return ByteBuffer.wrap(bytes, begin, 4).getInt();
     }
 }

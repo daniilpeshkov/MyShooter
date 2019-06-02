@@ -9,15 +9,13 @@ public class GameWorld {
         return entities;
     }
 
-
     public void addEntity(Entity entity) {
         entities.add(entity);   
     }
 
-    public void removeEntity(Entity entity) {
-        entities.remove(entity);
+    public void clearEntities() {
+        entities.clear();
     }
-
 
     public void update(int delta_t) {
         List<Entity> entitiesToRemove = new ArrayList<>();

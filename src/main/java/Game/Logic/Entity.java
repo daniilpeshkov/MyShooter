@@ -42,7 +42,6 @@ public abstract class Entity {
         BitsFormatHandler.writeFloatBits(x, core, BitsFormatHandler.x);
         BitsFormatHandler.writeFloatBits(y, core, BitsFormatHandler.y);
         BitsFormatHandler.writeFloatBits(r, core, BitsFormatHandler.r);
-        BitsFormatHandler.writeIntBits(id, core, BitsFormatHandler.id);
     }
 
     public boolean shouldExist() {

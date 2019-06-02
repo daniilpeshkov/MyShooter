@@ -132,8 +132,11 @@ public class Main {
             direction |= Player.RIGHT;
         }
 
-        player.move(direction);
-        if (isOnline) clientService.moveNude(direction);
+        if (isOnline) {
+            clientService.moveNude(direction);
+        } else {
+            player.updateDirection(direction);
+        }
 
         state = Keyboard.getKeyState(Keyboard.KEY_SPACE);
         if (state == Keyboard.PRESS) {
@@ -159,11 +162,16 @@ public class Main {
 
         float angle = (float) Math.atan2(cursorPos.y, cursorPos.x * Camera.getAspectRatio());
 
-        player.setFi(angle);
-        if (isOnline) clientService.angleNude(angle);
+        if (isOnline) {
+            clientService.angleNude(angle);
+        } else {
+            player.setFi(angle);
+        }
 
         cursor_pos.x = cursorPos.x;
         cursor_pos.y = cursorPos.y;
+
+        player.updateVelocity();
     }
 
     private class ConsoleEvent extends Thread {
@@ -186,7 +194,7 @@ public class Main {
                         else
                             clientService = new ServerService(str[1]);
 
-                        gameWorld.getEntities().clear();
+                        gameWorld.clearEntities();
                         isOnline = true;
                     }
                 } catch (IOException e) {

@@ -14,6 +14,8 @@ public class Server {
     private static ArrayList<ClientHandler> clientList = new ArrayList<>();
     private static ServerSocket serverSocket;
     private static GameWorld gameWorld;
+    private boolean isRunningSender = true;
+    private boolean isRunningConnections = true;
 
     public static ArrayList<ClientHandler> getClientList() {
         return clientList;
@@ -39,7 +41,7 @@ public class Server {
         @Override
         public void run() {
             try {
-                while (true) {
+                while (isRunningConnections) {
                     System.out.println("Waiting for connections...");
                     Socket socket = Server.serverSocket.accept();
                     System.out.println("Connection accepted");
@@ -60,17 +62,19 @@ public class Server {
     private class MassSender extends Thread {
         @Override
         public void run() {
-            while (!clientList.isEmpty()) {
-                ArrayList<byte[]> buffer = new ArrayList();
+            while (isRunningSender) {
+                if (!clientList.isEmpty()) {
+                    ArrayList<byte[]> buffer = new ArrayList<>();
 
-                System.out.println(buffer.size());
+                    System.out.println(buffer.size());
 
-                for (Entity entity : gameWorld.getEntities()) {
-                    buffer.add(entity.getCore());
-                }
+                    for (Entity entity : gameWorld.getEntities()) {
+                        buffer.add(entity.getCore());
+                    }
 
-                for (ClientHandler clientHandler : clientList) {
-                    clientHandler.writeCore(buffer);
+                    for (ClientHandler clientHandler : clientList) {
+                        clientHandler.writeCore(buffer);
+                    }
                 }
             }
         }

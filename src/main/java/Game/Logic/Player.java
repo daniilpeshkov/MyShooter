@@ -14,18 +14,20 @@ public class Player extends TexturedEntity {
     public static final byte DOWN = 0b10;
     public static final byte LEFT = 0b100;
     public static final byte RIGHT = 0b1000;
+    public static byte direction = 0;
 
+    public void updateDirection(byte direction) {
+        this.direction = direction;
+    }
 
-    public void move(byte direction) {
+    public void updateVelocity() {
         velocity.x = (-1 * (direction & LEFT) / LEFT + (direction & RIGHT)/ RIGHT) * SPEED;
         velocity.y = (-1 * (direction & DOWN) / DOWN + (direction & UP) / UP) * SPEED;
     }
 
-
     public Player(float x, float y, float r, int hp, int textureID) {
         super(x, y, r, textureID);
         healthPoint = hp;
-        this.getCore()[17] = 1;
     }
 
     @Override

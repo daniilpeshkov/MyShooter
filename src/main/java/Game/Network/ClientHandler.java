@@ -15,7 +15,7 @@ public class ClientHandler extends Thread {
     private static Player player = new Player(0, 0, 1f, 5, 2 );
     private static boolean isRunningListener = true;
     private static boolean isRunningSender = true;
-    volatile private static ArrayList<byte[]> buffer = new ArrayList<>();
+    private static ArrayList<byte[]> buffer = new ArrayList<>();
 
     public ClientHandler(Socket socket, GameWorld gameWorld) throws IOException {
         this.socket = socket;
@@ -38,7 +38,7 @@ public class ClientHandler extends Thread {
                 try {
                     in.read(bytes);
 
-                    player.move(bytes[0]);
+                    player.updateDirection(bytes[0]);
                     player.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.pFi));
 
                 } catch (SocketException s) {
