@@ -115,7 +115,7 @@ public class GameRenderer {
    }
 
    static float HEART_SIZE = 0.1f;
-   static float CURSOR_SIZE = 0.01f;
+   static float CURSOR_SIZE = 0.06f;
 
    public static void renderHUD(float x, float y, float hp) {
       GameRenderer.bindTexture(6);
