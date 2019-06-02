@@ -1,16 +1,30 @@
 package Game.Graphics;
 
-import Game.Logic.Entity;
 import Game.Logic.TexturedEntity;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
+import java.io.File;
+
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
 public class GameRenderer {
 
-    public static void renderEntity(TexturedEntity entity, Vector3f cameraPos) {
+
+     public Map<Integer, Texture> textureMap;
+
+     public void loadTextures() {
+        File texturePath = new File("src\\main\\resources");
+
+        for (File a : texturePath.listFiles()) {
+            String name = a.getName();
+
+        }
+     }
+
+
+     public static void renderEntity(TexturedEntity entity, Vector3f cameraPos) {
 
 
         Matrix3f rotation_matrix = new Matrix3f();

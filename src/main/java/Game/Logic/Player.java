@@ -1,25 +1,30 @@
 package Game.Logic;
 
+import Game.Graphics.Animation;
 import Game.Graphics.Texture;
 import org.joml.Vector3f;
 
 public class Player extends TexturedEntity {
 
+    RangedWeapon weapon = null;
+
+    private static final float SPEED = 4.0f / 1000f;
+
     public static final byte UP = 0b1;
     public static final byte DOWN = 0b10;
     public static final byte LEFT = 0b100;
     public static final byte RIGHT = 0b1000;
-    private static final float SPEED = 4.0f / 1000f;
-    RangedWeapon weapon = null;
+
+
+    public void move(byte direction) {
+        velocity.x = (-1 * (direction & LEFT) / LEFT + (direction & RIGHT)/ RIGHT) * SPEED;
+        velocity.y = (-1 * (direction & DOWN) / DOWN + (direction & UP) / UP) * SPEED;
+    }
+
 
     public Player(float x, float y, float r, int hp, Texture texture) {
         super(x, y, r, texture);
         healthPoint = hp;
-    }
-
-    public void move(byte direction) {
-        velocity.x = (-1 * (direction & LEFT) / LEFT + (direction & RIGHT) / RIGHT) * SPEED;
-        velocity.y = (-1 * (direction & DOWN) / DOWN + (direction & UP) / UP) * SPEED;
     }
 
     @Override
@@ -45,9 +50,9 @@ public class Player extends TexturedEntity {
     public void shot(GameWorld world) {
         if (weapon != null && weapon.canShot()) {
             Vector3f shooting_pos = new Vector3f(pos.x, pos.y, 0);
-            shooting_pos.x += (getR() + Bullet.RADIUS + getR() / 8) / 2 * Math.cos(fi);
+            shooting_pos.x +=  (getR() + Bullet.RADIUS + getR() / 8) / 2 * Math.cos(fi);
             shooting_pos.y += (getR() + Bullet.RADIUS + getR() / 8) / 2 * Math.sin(fi);
-            for (Entity entity : weapon.shot(shooting_pos, fi)) {
+            for(Entity entity :weapon.shot(shooting_pos, fi)){
                 world.addEntity(entity);
             }
         }

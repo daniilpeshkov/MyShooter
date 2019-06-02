@@ -14,6 +14,4 @@ abstract public class TexturedEntity extends Entity {
     public void bindTexture() {
         texture.bind();
     }
-
-
 }
