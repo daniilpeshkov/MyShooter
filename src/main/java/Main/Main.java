@@ -92,7 +92,8 @@ public class Main {
         if (isOnline) {
             if (!buffer.isEmpty()) {
                 System.out.println("lalala");
-                for (int i = 1; i < buffer.size(); i++) {
+                ArrayList<TexturedEntity> tmp = buffer;
+                for (int i = 1; i < tmp.size(); i++) {
                     System.out.println("object");
                     GameRenderer.renderEntity(buffer.get(i).getPos(), buffer.get(0).getPos(), buffer.get(i).getR(), buffer.get(i).getFi(), buffer.get(i).getTextureID());
                 }
@@ -109,8 +110,6 @@ public class Main {
         GameRenderer.renderHUD(cursor_pos.x, cursor_pos.y, player.getHP());
         GameRenderer.updateScreen();
     }
-
-
 
     void processInput() {
         byte direction = 0;
@@ -133,7 +132,7 @@ public class Main {
         }
 
         if (isOnline) {
-            Client.moveNude(direction);
+            Client.updateDirection(direction);
         } else {
             player.updateDirection(direction);
         }

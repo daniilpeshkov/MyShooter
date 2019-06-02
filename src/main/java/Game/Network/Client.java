@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 
 public class Client {
     static int port = 58146;
@@ -54,7 +55,7 @@ public class Client {
         init(ip, port);
     }
 
-    public static void moveNude(byte direction) {
+    public static void updateDirection(byte direction) {
         outputPack[0] = direction;
     }
 
@@ -86,15 +87,21 @@ public class Client {
 
             while (isRunningReceiver) {
                 try {
-                    in.read(bytes);
+                    if (in.available() > 22) {
+                        ArrayList<TexturedEntity> buf = new ArrayList<>();
 
-                    Main.buffer.clear();
-                    Main.buffer.add(new TexturedEntity(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x),
-                            BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y),
-                            BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.r),
-                            bytes[0]));
-                    System.out.println(Main.buffer.size());
+                        while (bytes[22] != 2) {
+                            in.read(bytes);
 
+                            buf.add(new TexturedEntity(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x),
+                                    BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y),
+                                    BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.r),
+                                    bytes[0]));
+                            System.out.println(Main.buffer.size());
+                        }
+
+                        Main.buffer = buf;
+                    }
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
                     isRunningReceiver = false;

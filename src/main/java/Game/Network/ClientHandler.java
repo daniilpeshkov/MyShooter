@@ -32,15 +32,17 @@ public class ClientHandler extends Thread {
     private class InputListener extends Thread {
         @Override
         public void run() {
-            byte[] bytes = new byte[5];
-
             while (isRunningListener) {
                 try {
-                    in.read(bytes);
-                    player.updateDirection(bytes[0]);
-                    player.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.pFi));
-                    System.out.println(player.getEntityId());
+                    byte[] bytes = new byte[5];
 
+                    if (in.available() > 4) {
+                        in.read(bytes);
+                        System.out.println(bytes[0]);
+
+                        player.updateDirection(bytes[0]);
+                        player.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.pFi));
+                    }
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
                     isRunningListener = false;
@@ -62,6 +64,7 @@ public class ClientHandler extends Thread {
                         for (byte[] i : buffer) {
                             out.write(i);
                         }
+                        out.write(serviceCore(2));
                         System.out.println(buffer.size());
                     }
                 } catch (SocketException s) {
@@ -73,6 +76,12 @@ public class ClientHandler extends Thread {
             }
             ClientHandler.this.stopService();
         }
+    }
+
+    public byte[] serviceCore(int mode) {
+        byte[] mas = new byte[23];
+        mas[22] = (byte) mode;
+        return mas;
     }
 
     public void writeCore(ArrayList<byte[]> cores) {
