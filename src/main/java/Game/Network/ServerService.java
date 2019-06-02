@@ -1,27 +1,33 @@
 package Game.Network;
 
-import Game.Logic.GameWorld;
+import Game.Graphics.GameRenderer;
+import org.joml.Vector3f;
+
 import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
 
 public class ServerService {
-    //    private int port;
-    static final int port = 58146;
+    static int port;
+    static final int SERVER_PORT = 58146;
     private static BufferedReader input;
     private static InputStream in;
     private static OutputStream out;
-    private static byte[] outputPack = new byte[4];
+    private static byte[] outputPack = new byte[5];
     private Socket socket;
     private String ip;
-    private GameWorld downloadedWorld;
 
-    private static boolean isRunning = true;
+    private static boolean isRunningHandler = true;
+    private static boolean isRunningReceiver = true;
+
+    private static boolean hasId = false;
+    private static int id;
+    private static Vector3f playerPos = new Vector3f(0, 0, 0);
 
     public ServerService(String ip, int port) {
         this.ip = ip;
-//        this.port = port;
+        this.port = port;
 
         try {
             System.out.println("Trying to connect...");
@@ -47,24 +53,27 @@ public class ServerService {
         }
     }
 
+    public ServerService(String ip) {
+        this(ip, SERVER_PORT);
+    }
+
     public void moveNude(byte direction) {
         outputPack[0] = direction;
     }
 
-    public void angleNude(int angle) {
-        outputPack[1] = (byte) (angle >> 8);
-        outputPack[2] = (byte) (angle);
+    public void angleNude(float angle) {
+        BitsFormatHandler.writeFloatBits(angle, outputPack, BitsFormatHandler.fi);
     }
 
     private class NudesHandler extends Thread {
         @Override
         public void run() {
-            while (isRunning) {
+            while (isRunningHandler) {
                 try {
                     out.write(outputPack);
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
-                    isRunning = false;
+                    isRunningHandler = false;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -76,23 +85,36 @@ public class ServerService {
     private class NudesReceiver extends Thread {
         @Override
         public void run() {
-//            byte[] bytes = new byte[10];
-//
-//            while (isRunning) {
-//                try {
-//                    in.read(bytes);
-//                    downloadedWorld.addEntity(Player());
-//
-//                    player.move(bytes[0]);
-//                    player.setDeciFi((bytes[1] << 8) + bytes[2]);
-//                } catch (SocketException s) {
-//                    System.out.println("Connection is closed");
-//                    isRunning = false;
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            ServerService.this.stopService();
+            byte[] bytes = new byte[23];
+
+            while (isRunningReceiver) {
+                try {
+                    in.read(bytes);
+
+                    if (!hasId) {
+                        hasId = true;
+
+                        id = BitsFormatHandler.readIntBits(bytes, BitsFormatHandler.id);
+                    }
+
+                    if (BitsFormatHandler.readIntBits(bytes, BitsFormatHandler.id) == id) {
+                        playerPos.x = BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x);
+                        playerPos.y = BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y);
+                    }
+
+                    Vector3f pos = new Vector3f(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x),
+                            BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y), 0);
+
+                    GameRenderer.renderEntity(pos, playerPos, BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.r),
+                            BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.fi), bytes[0]);
+                } catch (SocketException s) {
+                    System.out.println("Connection is closed");
+                    isRunningReceiver = false;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            ServerService.this.stopService();
         }
     }
 

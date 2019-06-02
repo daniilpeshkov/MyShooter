@@ -1,9 +1,20 @@
 package Game.Logic;
 
+import Game.Network.BitsFormatHandler;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public abstract class Entity {
+
+    /* Core format:
+    * 0 - textureId
+    * 1_4 - x
+    * 5_8 - y
+    * 9_12 - r
+    * 13_17 - fi
+    * 18_21 - entityId
+    * 22 - service field
+    * */
 
     protected Vector3f pos;
     protected float r;
@@ -11,17 +22,27 @@ public abstract class Entity {
     protected Vector2f velocity;
     protected boolean shouldExist = true;
     protected int healthPoint = 1;
+    protected int entityId;
+    public static int id = 0;
 
-    private byte[] core = new byte[10];
+    private byte[] core = new byte[23];
 
     public byte[] getCore() {
         return core;
     }
 
+    public int getEntityId() { return entityId; }
+
     public Entity(float x, float y, float r) {
         pos = new Vector3f(x, y, 0);
         this.r = r;
+        this.entityId = id++;
         velocity = new Vector2f();
+
+        BitsFormatHandler.writeFloatBits(x, core, BitsFormatHandler.x);
+        BitsFormatHandler.writeFloatBits(y, core, BitsFormatHandler.y);
+        BitsFormatHandler.writeFloatBits(r, core, BitsFormatHandler.r);
+        BitsFormatHandler.writeFloatBits(id, core, BitsFormatHandler.id);
     }
 
     public boolean shouldExist() {
@@ -34,40 +55,20 @@ public abstract class Entity {
 
     public void setFi(float fi) {
         this.fi = fi;
-    }
-    public void setDeciFi(int fi) {
-        this.fi = fi / 10000f;
-        core[8] = (byte)(fi >> 8);
-        core[9] = (byte)(fi);
+        BitsFormatHandler.writeFloatBits(fi, core, BitsFormatHandler.fi);
     }
 
     public float getX() { return pos.x; }
     public float getY() { return pos.y; }
 
-    public void moveX(float delta) { pos.x += delta; }
-    public void moveY(float delta) { pos.y += delta; }
-
-    public void moveDeciX(float delta) {
+    public void moveX(float delta) {
         pos.x += delta;
-        int posx = (int) (pos.x * 10000);
-
-        core[0] = (byte)(posx >> 24);
-        core[1] = (byte)(posx >> 16);
-        core[2] = (byte)(posx >> 8);
-        core[3] = (byte)posx;
-
-        pos.x = posx / 10000f;
+        BitsFormatHandler.writeFloatBits(pos.x, core, BitsFormatHandler.x);
     }
-    public void moveDeciY(float delta) {
+
+    public void moveY(float delta) {
         pos.y += delta;
-        int posy = (int) (pos.y * 10000);
-
-        core[4] = (byte)(posy >> 24);
-        core[5] = (byte)(posy >> 16);
-        core[6] = (byte)(posy >> 8);
-        core[7] = (byte)posy;
-
-        pos.y = posy / 10000f;
+        BitsFormatHandler.writeFloatBits(pos.y, core, BitsFormatHandler.y);
     }
 
     public float getR() {

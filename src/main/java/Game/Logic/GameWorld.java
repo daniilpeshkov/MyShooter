@@ -4,21 +4,18 @@ import java.util.*;
 
 public class GameWorld {
     private List<Entity> entities = new ArrayList<>();
-    // temporary list
-    private List<Entity> players = new ArrayList<>();
 
     public List<Entity> getEntities() {
         return entities;
     }
 
-    public List<Entity> getPlayers() {
-        return players;
-    }
 
     public void addEntity(Entity entity) {
-//        if (entity instanceof Player)
-//            players.add((entity);
         entities.add(entity);   
+    }
+
+    public void removeEntity(Entity entity) {
+        entities.remove(entity);
     }
 
 
@@ -69,8 +66,8 @@ public class GameWorld {
 
         for (int i = 0; i < entities.size(); i++) {
             Entity entity = entities.get(i);
-            entity.moveDeciY(entity.getVelocity().y * delta_t);
-            entity.moveDeciX(entity.getVelocity().x * delta_t);
+            entity.moveY(entity.getVelocity().y * delta_t);
+            entity.moveX(entity.getVelocity().x * delta_t);
         }
     }
 

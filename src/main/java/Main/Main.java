@@ -22,6 +22,7 @@ public class Main {
     private BufferedReader input;
     private ServerService clientService;
     private Server server;
+    private boolean isClient = false;
 
     public static void main(String[] args) {
         new Main().run();
@@ -143,17 +144,14 @@ public class Main {
 
         Vector2f cursorPos = GameRenderer.getCursorPos();
 
-        // crutch for sending angle though network
-        int angle = (int) (10000 * Math.atan2(cursorPos.y, cursorPos.x * Camera.getAspectRatio()));
+        float angle = (float) Math.atan2(cursorPos.y, cursorPos.x * Camera.getAspectRatio());
 
-        player.setDeciFi(angle);
+        player.setFi(angle);
         if (isOnline) clientService.angleNude(angle);
 
         cursor_pos.x = cursorPos.x;
         cursor_pos.y = cursorPos.y;
     }
-
-
 
     private class ConsoleEvent extends Thread {
         @Override
@@ -166,11 +164,18 @@ public class Main {
 
                     if (string.equals("/server start")) {
                         server = new Server(gameWorld);
-                        System.out.println("Server started");
                     } else if (string.contains("/connect")) {
                         String[] str = string.split(" ");
-                        String[] s = str[1].split(":");
-                        clientService = new ServerService(s[0], Integer.parseInt(s[1]));
+                        if (str[1].contains(":")) {
+                            String[] s = str[1].split(":");
+                            clientService = new ServerService(s[0], Integer.parseInt(s[1]));
+                        }
+                        else
+                            clientService = new ServerService(str[1]);
+
+                        for (Entity entity : gameWorld.getEntities()) {
+                            gameWorld.removeEntity(entity);
+                        }
                         isOnline = true;
                     }
                 } catch (IOException e) {
@@ -179,5 +184,4 @@ public class Main {
             }
         }
     }
-
 }

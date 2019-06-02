@@ -26,8 +26,7 @@ public class Server {
             serverSocket = new ServerSocket(SERVER_PORT);
 
             System.out.println("Server Started");
-            System.out.println("Server LocalPort: " + serverSocket.getLocalPort());
-            System.out.println("Server Address: " + serverSocket.getInetAddress());
+            System.out.println("Server Address: " + serverSocket.getLocalSocketAddress());
 
             new Connect().start();
             new MassSender().start();
@@ -64,7 +63,7 @@ public class Server {
             while (!clientList.isEmpty()) {
                 ArrayList<byte[]> buffer = new ArrayList();
 
-                for (Entity entity : gameWorld.getPlayers()) {
+                for (Entity entity : gameWorld.getEntities()) {
                     buffer.add(entity.getCore());
                 }
 

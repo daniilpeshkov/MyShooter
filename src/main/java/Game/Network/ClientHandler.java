@@ -12,10 +12,11 @@ public class ClientHandler extends Thread {
     private static Socket socket;
     private static InputStream in;
     private static OutputStream out;
-    private static Player player = new Player(5, 1, 1f, 5, 2 );
+    private static Player player = new Player(0, 0, 1f, 5, 2 );
     private static boolean isRunningListener = true;
     private static boolean isRunningSender = true;
     private static ArrayList<byte[]> buffer;
+    private static boolean hasClientId = false;
 
     public ClientHandler(Socket socket, GameWorld gameWorld) throws IOException {
         this.socket = socket;
@@ -32,14 +33,14 @@ public class ClientHandler extends Thread {
     private class InputListener extends Thread {
         @Override
         public void run() {
-            byte[] bytes = new byte[4];
+            byte[] bytes = new byte[5];
 
             while (isRunningListener) {
                 try {
                     in.read(bytes);
 
                     player.move(bytes[0]);
-                    player.setDeciFi((bytes[1] << 8) + bytes[2]);
+                    player.setFi(BitsFormatHandler.readFloatBits(bytes, 1));
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
                     isRunningListener = false;
@@ -56,8 +57,12 @@ public class ClientHandler extends Thread {
         public void run() {
             while (isRunningSender) {
                 try {
-                    for (byte[] i : buffer)
-                       out.write(i);
+                    if (!buffer.isEmpty()) {
+                        out.write(player.getCore());
+                        for (byte[] i : buffer) {
+                            out.write(i);
+                        }
+                    }
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
                     isRunningSender = false;
