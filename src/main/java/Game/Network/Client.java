@@ -54,11 +54,11 @@ public class Client {
         init(ip, port);
     }
 
-    public void moveNude(byte direction) {
+    public static void moveNude(byte direction) {
         outputPack[0] = direction;
     }
 
-    public void angleNude(float angle) {
+    public static void angleNude(float angle) {
         BitsFormatHandler.writeFloatBits(angle, outputPack, BitsFormatHandler.pFi);
     }
 
