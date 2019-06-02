@@ -175,17 +175,6 @@ public class GameRenderer {
       if (window == NULL)
          throw new RuntimeException("Failed to create the GLFW window");
 
-      glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-         if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-            glfwSetWindowShouldClose(window, true);
-         if (key == GLFW_KEY_UP) {
-            Camera.zoomIn();
-         }
-         if (key == GLFW_KEY_DOWN) {
-            Camera.zoomOut();
-         }
-      });
-
       // Get the thread stack and push a new frame
       try (MemoryStack stack = stackPush()) {
          IntBuffer pWidth = stack.mallocInt(1);
@@ -233,10 +222,6 @@ public class GameRenderer {
       return glfwWindowShouldClose(GameRenderer.window);
    }
 
-   public static int getKeyState(int key) {
-       return glfwGetKey(window, key);
-   }
-
    public static void clearWindow() {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
       glClearColor(1, 1, 1, 1);
@@ -247,7 +232,10 @@ public class GameRenderer {
       glfwSwapBuffers(GameRenderer.window); // swap the color buffers
    }
 
-   //
+   public static void pollEvents() {
+       glfwPollEvents();
+   }
+
    public static Vector2f getCursorPos() {
       double[] cursor_x = new double[1], cursor_y = new double[1];
 
@@ -255,5 +243,4 @@ public class GameRenderer {
       return new Vector2f((float) ((cursor_x[0] - GameRenderer.W / 2.0d) / GameRenderer.W * 2.0f),
               (float) ((GameRenderer.H / 2.0d - cursor_y[0]) / GameRenderer.H * 2.0f));
    }
-
 }

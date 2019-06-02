@@ -1,6 +1,7 @@
 package Main;
 
 
+import Game.GameInput.Keyboard;
 import Game.Graphics.Camera;
 import Game.Graphics.GameRenderer;
 import Game.Logic.*;
@@ -11,8 +12,6 @@ import org.joml.Vector2f;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public class Main {
     GameWorld gameWorld;
@@ -75,7 +74,7 @@ public class Main {
             processInput();
 
             last_time = start_time;
-            glfwPollEvents();
+            GameRenderer.pollEvents();
         }
     }
 
@@ -102,34 +101,44 @@ public class Main {
     void processInput() {
         byte direction = 0;
 
-        int state = GameRenderer.getKeyState(GLFW_KEY_W);
-        if (state == GLFW_PRESS) {
+        int state = Keyboard.getKeyState(Keyboard.KEY_W);
+        if (state == Keyboard.PRESS) {
             direction |= Player.UP;
         }
-        state = GameRenderer.getKeyState(GLFW_KEY_S);
-        if (state == GLFW_PRESS) {
+        state = Keyboard.getKeyState(Keyboard.KEY_S);
+        if (state == Keyboard.PRESS) {
             direction |= Player.DOWN;
         }
-        state = GameRenderer.getKeyState(GLFW_KEY_A);
-        if (state == GLFW_PRESS) {
+        state = Keyboard.getKeyState(Keyboard.KEY_A);
+        if (state == Keyboard.PRESS) {
             direction |= Player.LEFT;
         }
-        state = GameRenderer.getKeyState(GLFW_KEY_D);
-        if (state == GLFW_PRESS) {
+        state = Keyboard.getKeyState(Keyboard.KEY_D);
+        if (state == Keyboard.PRESS) {
             direction |= Player.RIGHT;
         }
 
         player.move(direction);
         if (isOnline) clientService.moveNude(direction);
 
-        state = GameRenderer.getKeyState(GLFW_KEY_SPACE);
-        if (state == GLFW_PRESS) {
+        state = Keyboard.getKeyState(Keyboard.KEY_SPACE);
+        if (state == Keyboard.PRESS) {
             player.shot(gameWorld);
         }
 
-        state = GameRenderer.getKeyState(GLFW_KEY_R);
-        if (state == GLFW_PRESS) {
+        state = Keyboard.getKeyState(Keyboard.KEY_R);
+        if (state == Keyboard.PRESS) {
             initGame();
+        }
+
+        state = Keyboard.getKeyState(Keyboard.KEY_UP);
+        if (state == Keyboard.PRESS) {
+            Camera.zoomIn();
+        }
+
+        state = Keyboard.getKeyState(Keyboard.KEY_DOWN);
+        if (state == Keyboard.PRESS) {
+            Camera.zoomOut();
         }
 
         Vector2f cursorPos = GameRenderer.getCursorPos();
