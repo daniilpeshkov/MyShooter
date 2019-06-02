@@ -1,7 +1,5 @@
 package Game.Logic;
 
-import Game.Graphics.Texture;
-
 public abstract class Enemy extends TexturedEntity {
 
     protected Player[] players;
@@ -34,7 +32,7 @@ public abstract class Enemy extends TexturedEntity {
 
     public void follow(Entity entity) {
         float angle = (float) Math.atan2(entity.pos.y - pos.y, entity.pos.x - pos.x);
-        fi = angle;
+        setFi(angle);
 
         this.velocity.x = (float) (speed * Math.cos(angle));
         this.velocity.y = (float) (speed * Math.sin(angle));

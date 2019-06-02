@@ -16,7 +16,7 @@ public class Client {
     private static BufferedReader input;
     private static InputStream in;
     private static OutputStream out;
-    private static byte[] outputPack = new byte[5];
+    private static byte[] outputPack = new byte[6];
 
     private static Socket socket;
     private static String ip;
@@ -64,6 +64,10 @@ public class Client {
         BitsFormatHandler.writeFloatBits(angle, outputPack, BitsFormatHandler.pFi);
     }
 
+    public static void fireBullets() {
+        outputPack[5] = 1;
+    }
+
     private static class PackageSender extends Thread {
         @Override
         public void run() {
@@ -96,10 +100,13 @@ public class Client {
                         if (in.available() > 22) {
                             in.read(bytes);
 
-                            buf.add(new TexturedEntity(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x),
+                            TexturedEntity entity = new TexturedEntity(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x),
                                     BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y),
                                     BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.r),
-                                    bytes[0]));
+                                    bytes[0]);
+                            entity.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.fi));
+
+                            buf.add(entity);
                         }
                     }
 

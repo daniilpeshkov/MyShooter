@@ -16,9 +16,11 @@ public class ClientHandler extends Thread {
     private boolean isRunningListener = true;
     private boolean isRunningSender = true;
     private ArrayList<byte[]> buffer = new ArrayList<>();
+    private GameWorld gameWorld;
 
     public ClientHandler(Socket socket, GameWorld gameWorld) throws IOException {
         this.socket = socket;
+        this.gameWorld = gameWorld;
 
         in = socket.getInputStream();
         out = socket.getOutputStream();
@@ -34,13 +36,14 @@ public class ClientHandler extends Thread {
         public void run() {
             while (isRunningListener) {
                 try {
-                    byte[] bytes = new byte[5];
+                    byte[] bytes = new byte[6];
 
-                    if (in.available() > 4) {
+                    if (in.available() > 5) {
                         in.read(bytes);
 
                         player.updateDirection(bytes[0]);
                         player.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.pFi));
+                        if (bytes[5] == 1) player.shot(gameWorld);
                     }
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");

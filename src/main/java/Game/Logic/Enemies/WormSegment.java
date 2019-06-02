@@ -1,6 +1,5 @@
 package Game.Logic.Enemies;
 
-import Game.Graphics.Texture;
 import Game.Logic.Enemy;
 import Game.Logic.Entity;
 import Game.Logic.GameWorld;
