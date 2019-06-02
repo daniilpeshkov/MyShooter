@@ -38,7 +38,6 @@ public class ClientHandler extends Thread {
 
                     if (in.available() > 4) {
                         in.read(bytes);
-                        System.out.println(bytes[0]);
 
                         player.updateDirection(bytes[0]);
                         player.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.pFi));

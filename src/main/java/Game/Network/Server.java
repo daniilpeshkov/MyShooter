@@ -69,8 +69,6 @@ public class Server {
                 if (!clientList.isEmpty()) {
                     ArrayList<byte[]> buffer = new ArrayList<>();
 
-                    System.out.println(buffer.size());
-
                     for (Entity entity : gameWorld.getEntities()) {
                         buffer.add(entity.getCore());
                     }
