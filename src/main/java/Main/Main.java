@@ -5,6 +5,7 @@ import Game.GameInput.Keyboard;
 import Game.Graphics.Camera;
 import Game.Graphics.GameRenderer;
 import Game.Logic.*;
+import Game.Logic.Enemies.RunningEnemy;
 import Game.Logic.Enemies.WormSegment;
 import Game.Network.Server;
 import Game.Network.Client;
@@ -47,10 +48,15 @@ public class Main {
         gameWorld = new GameWorld();
         player = new Player(5, 1, 1f, 5, 2);
 
+        gameWorld.addEntity(new RunningEnemy(gameWorld,1,1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
+        gameWorld.addEntity(new RunningEnemy(gameWorld,2,1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
+        gameWorld.addEntity(new RunningEnemy(gameWorld,1,2, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
+        gameWorld.addEntity(new RunningEnemy(gameWorld,1,-1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
+
         gameWorld.addEntity(player);
 
-        WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, 4,
-                new Player[] {player});
+//        WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, 4,
+//                new Player[] {player});
 
 //        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 10);
 
