@@ -104,7 +104,9 @@ public class Client {
                                     BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y),
                                     BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.r),
                                     bytes[0]);
+
                             entity.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.fi));
+                            entity.setHP(bytes[17]);
 
                             buf.add(entity);
                         }

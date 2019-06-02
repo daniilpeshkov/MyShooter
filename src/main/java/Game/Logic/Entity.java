@@ -12,7 +12,7 @@ public abstract class Entity {
     * 5_8 - y
     * 9_12 - r
     * 13_16 - fi
-    * 17_20 - entityId
+    * 17 - hp
     * 22 - service field
     * */
 
@@ -94,6 +94,15 @@ public abstract class Entity {
 
     public void addHP(int d_hp) {
         healthPoint += d_hp;
+        if (healthPoint <= 0) {
+            shouldExist = false;
+        }
+    }
+
+    public void setHP(int hp) {
+        core[17] = (byte) hp;
+
+        healthPoint = hp;
         if (healthPoint <= 0) {
             shouldExist = false;
         }
