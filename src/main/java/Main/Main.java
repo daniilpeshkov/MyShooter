@@ -91,6 +91,7 @@ public class Main {
 
         if (isOnline) {
             if (!buffer.isEmpty()) {
+                System.out.println("lalala");
                 for (int i = 1; i < buffer.size(); i++) {
                     System.out.println("object");
                     GameRenderer.renderEntity(buffer.get(i).getPos(), buffer.get(0).getPos(), buffer.get(i).getR(), buffer.get(i).getFi(), buffer.get(i).getTextureID());

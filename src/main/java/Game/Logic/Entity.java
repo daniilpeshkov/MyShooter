@@ -11,8 +11,8 @@ public abstract class Entity {
     * 1_4 - x
     * 5_8 - y
     * 9_12 - r
-    * 13_17 - fi
-    * 18_21 - entityId
+    * 13_16 - fi
+    * 17_20 - entityId
     * 22 - service field
     * */
 
@@ -42,7 +42,7 @@ public abstract class Entity {
         BitsFormatHandler.writeFloatBits(x, core, BitsFormatHandler.x);
         BitsFormatHandler.writeFloatBits(y, core, BitsFormatHandler.y);
         BitsFormatHandler.writeFloatBits(r, core, BitsFormatHandler.r);
-        BitsFormatHandler.writeFloatBits(id, core, BitsFormatHandler.id);
+        BitsFormatHandler.writeIntBits(id, core, BitsFormatHandler.id);
     }
 
     public boolean shouldExist() {

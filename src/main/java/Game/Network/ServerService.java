@@ -1,9 +1,7 @@
 package Game.Network;
 
-import Game.Graphics.GameRenderer;
 import Game.Logic.TexturedEntity;
 import Main.Main;
-import org.joml.Vector3f;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -11,8 +9,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 public class ServerService {
-    static int port;
-    static final int SERVER_PORT = 58146;
+    static int port = 58146;
     private static BufferedReader input;
     private static InputStream in;
     private static OutputStream out;
@@ -22,10 +19,6 @@ public class ServerService {
 
     private static boolean isRunningHandler = true;
     private static boolean isRunningReceiver = true;
-
-    private static boolean hasId = false;
-    private static int id;
-    private static Vector3f playerPos = new Vector3f(0, 0, 0);
 
     public ServerService(String ip, int port) {
         this.ip = ip;
@@ -37,7 +30,7 @@ public class ServerService {
             System.out.println("Connection established");
 
             try {
-                input = new BufferedReader(new InputStreamReader(System.in));
+//                input = new BufferedReader(new InputStreamReader(System.in));
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
 
@@ -56,7 +49,7 @@ public class ServerService {
     }
 
     public ServerService(String ip) {
-        this(ip, SERVER_PORT);
+        this(ip, port);
     }
 
     public void moveNude(byte direction) {
@@ -64,7 +57,7 @@ public class ServerService {
     }
 
     public void angleNude(float angle) {
-        BitsFormatHandler.writeFloatBits(angle, outputPack, 1);
+        BitsFormatHandler.writeFloatBits(angle, outputPack, BitsFormatHandler.pFi);
     }
 
     private class NudesHandler extends Thread {
@@ -98,6 +91,7 @@ public class ServerService {
                             BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y),
                             BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.r),
                             bytes[0]));
+                    System.out.println(Main.buffer.size());
 
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");

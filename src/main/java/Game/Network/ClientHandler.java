@@ -15,8 +15,7 @@ public class ClientHandler extends Thread {
     private static Player player = new Player(0, 0, 1f, 5, 2 );
     private static boolean isRunningListener = true;
     private static boolean isRunningSender = true;
-    private static ArrayList<byte[]> buffer = new ArrayList<>();
-    private static boolean hasClientId = false;
+    volatile private static ArrayList<byte[]> buffer = new ArrayList<>();
 
     public ClientHandler(Socket socket, GameWorld gameWorld) throws IOException {
         this.socket = socket;
@@ -40,7 +39,8 @@ public class ClientHandler extends Thread {
                     in.read(bytes);
 
                     player.move(bytes[0]);
-                    player.setFi(BitsFormatHandler.readFloatBits(bytes, 1));
+                    player.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.pFi));
+
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
                     isRunningListener = false;
@@ -62,6 +62,7 @@ public class ClientHandler extends Thread {
                         for (byte[] i : buffer) {
                             out.write(i);
                         }
+                        System.out.println(buffer.size());
                     }
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
