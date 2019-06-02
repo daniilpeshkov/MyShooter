@@ -96,6 +96,7 @@ public class Main {
                 for (int i = 1; i < tmp.size(); i++) {
                     GameRenderer.renderEntity(tmp.get(i).getPos(), tmp.get(0).getPos(), tmp.get(i).getR(), tmp.get(i).getFi(), tmp.get(i).getTextureID());
                 }
+                GameRenderer.renderHUD(cursor_pos.x, cursor_pos.y, tmp.get(0).getHP());
             }
         } else {
             gameWorld.getEntities().forEach(entity -> {
@@ -104,9 +105,8 @@ public class Main {
                     //TODO this parameters can be overridden from network interface because now it is just numbers
                 }
             });
+            GameRenderer.renderHUD(cursor_pos.x, cursor_pos.y, player.getHP());
         }
-
-        GameRenderer.renderHUD(cursor_pos.x, cursor_pos.y, player.getHP());
         GameRenderer.updateScreen();
     }
 
