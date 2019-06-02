@@ -5,6 +5,7 @@ import Game.GameInput.Keyboard;
 import Game.Graphics.Camera;
 import Game.Graphics.GameRenderer;
 import Game.Logic.*;
+import Game.Logic.Enemies.WormSegment;
 import Game.Network.Server;
 import Game.Network.Client;
 import org.joml.Vector2f;
@@ -48,10 +49,10 @@ public class Main {
 
         gameWorld.addEntity(player);
 
-//        WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, worm_tex,
-//                new Player[] {player});
-//
-//        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
+        WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, 4,
+                new Player[] {player});
+
+        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
 
         player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4), 0,
                 300, 1, new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), 1)));
@@ -91,11 +92,9 @@ public class Main {
 
         if (isOnline) {
             if (!buffer.isEmpty()) {
-                System.out.println("lalala");
                 ArrayList<TexturedEntity> tmp = buffer;
                 for (int i = 1; i < tmp.size(); i++) {
-                    System.out.println("object");
-                    GameRenderer.renderEntity(buffer.get(i).getPos(), buffer.get(0).getPos(), buffer.get(i).getR(), buffer.get(i).getFi(), buffer.get(i).getTextureID());
+                    GameRenderer.renderEntity(tmp.get(i).getPos(), tmp.get(0).getPos(), tmp.get(i).getR(), tmp.get(i).getFi(), tmp.get(i).getTextureID());
                 }
             }
         } else {

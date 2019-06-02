@@ -1,5 +1,6 @@
 package Game.Network;
 
+import Game.Graphics.Texture;
 import Game.Logic.TexturedEntity;
 import Main.Main;
 
@@ -81,27 +82,28 @@ public class Client {
     }
 
     private static class NudesReceiver extends Thread {
+
+        ArrayList<TexturedEntity> a;
+
         @Override
         public void run() {
-            byte[] bytes = new byte[23];
-
             while (isRunningReceiver) {
                 try {
-                    if (in.available() > 22) {
-                        ArrayList<TexturedEntity> buf = new ArrayList<>();
+                    byte[] bytes = new byte[23];
+                    ArrayList<TexturedEntity> buf = new ArrayList<>();
 
-                        while (bytes[22] != 2) {
+                    while (bytes[22] != 2) {
+                        if (in.available() > 22) {
                             in.read(bytes);
 
                             buf.add(new TexturedEntity(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x),
                                     BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y),
                                     BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.r),
                                     bytes[0]));
-                            System.out.println(Main.buffer.size());
                         }
-
-                        Main.buffer = buf;
                     }
+
+                    Main.buffer = buf;
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
                     isRunningReceiver = false;
