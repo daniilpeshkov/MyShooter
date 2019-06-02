@@ -9,10 +9,10 @@ public class RunningEnemy extends Enemy {
 
     public static float RANG_FOR_CHARGE = 20;
 
-    public RunningEnemy(GameWorld world, float x, float y, float r, int hp, float speed, Texture texture, Player[] players) {
-        super(world, x, y, r, hp, speed, texture, players);
+    public RunningEnemy(GameWorld world, float x, float y, float r, int hp, float speed, int textureID, Player[] players) {
+        super(world, x, y, r, hp, speed, textureID, players);
         weapon = new MeleeWeapon(0.1f, 500, 1,
-                new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), new Texture()));
+                new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), 0));
     }
 
     @Override

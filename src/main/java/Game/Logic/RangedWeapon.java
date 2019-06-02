@@ -35,14 +35,14 @@ public class RangedWeapon {
             if (countOfBarrel == 1) {
                 Vector2f velocity = new Vector2f((float) (Bullet.SPEED * Math.cos(angle)),
                         (float) (Bullet.SPEED * Math.sin(angle)));
-                bullets[0] = new Bullet(pos.x, pos.y, ammo.r, damage, ammo.ttl, velocity, ammo.texture);
+                bullets[0] = new Bullet(pos.x, pos.y, ammo.r, damage, ammo.ttl, velocity, ammo.textureID);
             } else {
                 float d_angle = sprayAngle / (countOfBarrel - 1);
                 float cur_angle = angle - sprayAngle / 2;
                 for (int i = 0; i < countOfBarrel; i++) {
                     Vector2f velocity = new Vector2f((float) (Bullet.SPEED * Math.cos(cur_angle)),
                             (float) (Bullet.SPEED * Math.sin(cur_angle)));
-                    bullets[i] = new Bullet(pos.x, pos.y, ammo.r, damage, ammo.ttl, velocity, ammo.texture);
+                    bullets[i] = new Bullet(pos.x, pos.y, ammo.r, damage, ammo.ttl, velocity, ammo.textureID);
                     cur_angle += d_angle;
                 }
             }

@@ -13,15 +13,15 @@ public class WormSegment extends Enemy {
 
     private WormSegment nextSegment = null;
 
-    public WormSegment(GameWorld world, float x, float y, float r, int hp, float speed, Texture texture, Player[] players) {
-        super(world, x, y, r, hp, speed, texture, players);
+    public WormSegment(GameWorld world, float x, float y, float r, int hp, float speed, int textureID, Player[] players) {
+        super(world, x, y, r, hp, speed, textureID, players);
     }
 
     public static void generateWorm(GameWorld gameWorld, WormSegment head, float fi, int length) {
         gameWorld.addEntity(head);
         for (int i = 0; i < length; i++) {
             WormSegment worm = new WormSegment(gameWorld, (float) (head.pos.x + head.r * Math.cos(fi)),
-                    (float) (head.pos.y + head.r * Math.sin(fi)), head.r, head.healthPoint, head.speed, head.texture, head.players);
+                    (float) (head.pos.y + head.r * Math.sin(fi)), head.r, head.healthPoint, head.speed, head.textureID, head.players);
             head.addTail(worm);
             head = worm;
             gameWorld.addEntity(head);

@@ -9,15 +9,15 @@ public abstract class Enemy extends TexturedEntity {
     protected GameWorld world;
     protected float speed = 0;
 
-    public Enemy(GameWorld world, float x, float y, float r, int hp, Texture texture, Player[] players) {
-        super(x, y, r, texture);
+    public Enemy(GameWorld world, float x, float y, float r, int hp, int textureID, Player[] players) {
+        super(x, y, r, textureID);
         this.players = players;
         healthPoint = hp;
         this.world = world;
     }
 
-    public Enemy(GameWorld world, float x, float y, float r, int hp, float speed, Texture texture, Player[] players) {
-        super(x, y, r, texture);
+    public Enemy(GameWorld world, float x, float y, float r, int hp, float speed, int textureID, Player[] players) {
+        super(x, y, r, textureID);
         this.players = players;
         healthPoint = hp;
         this.world = world;

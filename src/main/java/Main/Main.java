@@ -38,14 +38,8 @@ public class Main {
     private long millis_per_frame = (long) ((1.0f / 30.0f) * 1000.0f);
     private Player player;
     private Texture cursor_tex;
-    private static Texture player_tex;
-    private Texture field_tex;
-    private Texture bullet_tex;
-    private Texture walkingEnemy_tex;
-    private Texture shooter_tex;
-    private Texture heart_tex;
-    private Texture worm_tex;
-    private Vector2f cursor_pos;
+    Vector2f cursor_pos;
+
     // The window handle
     private long window;
     private BufferedReader input;
@@ -129,28 +123,20 @@ public class Main {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
-        player_tex = Texture.genTexture("src\\main\\resources\\character.png");
-        field_tex = Texture.genTexture("src\\main\\resources\\field.png");
-        cursor_tex = Texture.genTexture("src\\main\\resources\\cursor.png");
-        bullet_tex = Texture.genTexture("src\\main\\resources\\bullet.png");
-        shooter_tex = Texture.genTexture("src\\main\\resources\\shooter.png");
-        walkingEnemy_tex = Texture.genTexture("src\\main\\resources\\zombie.png");
-        heart_tex = Texture.genTexture("src\\main\\resources\\heart.png");
-        worm_tex = Texture.genTexture("src\\main\\resources\\worm.png");
+        GameRenderer.loadTextures();
+
 
         cursor_pos = new Vector2f();
+
 
         initGame();
     }
 
-    public static Texture getPlayer_tex() {
-        return player_tex;
-    }
 
     private void initGame() {
 
         gameWorld = new GameWorld();
-        player = new Player(5, 1, 1f, 5, player_tex);
+        player = new Player(5, 1, 1f, 5, 2);
 
         gameWorld.addEntity(player);
 
@@ -160,7 +146,7 @@ public class Main {
 //        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 40);
 
         player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4), 0,
-                300, 1, new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), bullet_tex)));
+                300, 1, new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), 1)));
     }
 
     private void loop() {
@@ -207,36 +193,12 @@ public class Main {
             }
         });
 
-        renderHUD();
-
-        renderCursor(cursor_pos.x, cursor_pos.y);
+        GameRenderer.renderHUD(cursor_pos.x, cursor_pos.y, player.getHP());
 
         glfwSwapBuffers(window); // swap the color buffers
     }
 
-    void renderHUD() {
-        heart_tex.bind();
-        for (int i = 0; i < player.getHP(); i++) {
 
-            glEnable(GL_TEXTURE_2D);
-            glBegin(GL_QUADS);
-
-            glTexCoord2f(0, 0);
-            glVertex2f(-1 + i * heart_size / Camera.getAspectRatio(), 1);
-
-            glTexCoord2f(0, 1);
-            glVertex2f(-1 + (i + 1) * heart_size / Camera.getAspectRatio(), 1);
-
-            glTexCoord2f(1, 1);
-            glVertex2f(-1 + (i + 1) * heart_size / Camera.getAspectRatio(), 1 - heart_size);
-
-            glTexCoord2f(1, 0);
-            glVertex2f(-1 + i * heart_size / Camera.getAspectRatio(), 1 - heart_size);
-            glEnd();
-            glPopMatrix();
-            glDisable(GL_TEXTURE_2D);
-        }
-    }
 
     void processInput() {
         byte direction = 0;
@@ -290,26 +252,7 @@ public class Main {
         cursor_pos.y = norm_y;
     }
 
-    void renderCursor(float x, float y) {
-        cursor_tex.bind();
 
-        glEnable(GL_TEXTURE_2D);
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex2f(x - cursor_size / Camera.getAspectRatio(), y + cursor_size);
-
-        glTexCoord2f(0, 1);
-        glVertex2f(x + cursor_size / Camera.getAspectRatio(), y + cursor_size);
-
-        glTexCoord2f(1, 1);
-        glVertex2f(x + cursor_size / Camera.getAspectRatio(), y - cursor_size);
-
-        glTexCoord2f(1, 0);
-        glVertex2f(x - cursor_size / Camera.getAspectRatio(), y - cursor_size);
-
-        glEnd();
-        glDisable(GL_TEXTURE_2D);
-    }
 
     private class ConsoleEvent extends Thread {
         @Override

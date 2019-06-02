@@ -12,7 +12,7 @@ public class ClientHandler extends Thread {
     private static Socket socket;
     private static InputStream in;
     private static OutputStream out;
-    private static Player player = new Player(5, 1, 1f, 5, Main.Main.getPlayer_tex());
+    private static Player player = new Player(5, 1, 1f, 5, 2 );
     private static boolean isRunningListener = true;
     private static boolean isRunningSender = true;
     private static ArrayList<byte[]> buffer;

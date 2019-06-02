@@ -13,8 +13,8 @@ public class Bullet extends TexturedEntity {
     protected int damage;
     private int time_lived = 0;
 
-    public Bullet(float x, float y, float r, int damage, int ttl/*in millis*/, Vector2f velocity, Texture texture) {
-        super(x, y, r, texture);
+    public Bullet(float x, float y, float r, int damage, int ttl/*in millis*/, Vector2f velocity, int textureID) {
+        super(x, y, r, textureID);
         this.ttl = ttl;
         this.velocity = velocity;
         this.damage = damage;

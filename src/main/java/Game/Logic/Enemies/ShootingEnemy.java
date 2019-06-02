@@ -10,8 +10,8 @@ public class ShootingEnemy extends Enemy {
     public static float RANG_FOR_CHARGE = 40;
     public static float RANG_FOR_SHOT = 3;
 
-    public ShootingEnemy(GameWorld world, float x, float y, float r, int hp, RangedWeapon weapon, Texture texture, Player[] players) {
-        super(world, x, y, r, hp, texture, players);
+    public ShootingEnemy(GameWorld world, float x, float y, float r, int hp, RangedWeapon weapon, int textureID, Player[] players) {
+        super(world, x, y, r, hp, textureID, players);
         this.weapon = weapon;
     }
 

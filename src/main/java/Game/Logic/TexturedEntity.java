@@ -1,17 +1,17 @@
 package Game.Logic;
 
-import Game.Graphics.Texture;
-
 abstract public class TexturedEntity extends Entity {
 
-    protected Texture texture;
+    protected int textureID;
 
-    public TexturedEntity(float x, float y, float r, Texture texture) {
+    public TexturedEntity(float x, float y, float r, int textureID) {
         super(x, y, r);
-        this.texture = texture;
+        this.textureID = textureID;
     }
 
-    public void bindTexture() {
-        texture.bind();
+    public int getTextureID() {
+        return textureID;
     }
+
+
 }
