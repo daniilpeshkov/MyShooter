@@ -53,11 +53,9 @@ public class Player extends TexturedEntity {
             Vector3f shooting_pos = new Vector3f(pos.x, pos.y, 0);
             shooting_pos.x +=  (getR() + Bullet.RADIUS + getR() / 8) / 2 * Math.cos(fi);
             shooting_pos.y += (getR() + Bullet.RADIUS + getR() / 8) / 2 * Math.sin(fi);
-            System.out.println(world.getEntities().size());
             for(Entity entity :weapon.shot(shooting_pos, fi)){
                 world.addEntity(entity);
             }
-            System.out.println(world.getEntities().size());
         }
     }
 
