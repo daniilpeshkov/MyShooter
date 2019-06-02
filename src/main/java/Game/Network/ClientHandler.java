@@ -9,13 +9,13 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 public class ClientHandler extends Thread {
-    private static Socket socket;
-    private static InputStream in;
-    private static OutputStream out;
-    private static Player player = new Player(0, 0, 1f, 5, 2 );
-    private static boolean isRunningListener = true;
-    private static boolean isRunningSender = true;
-    private static ArrayList<byte[]> buffer = new ArrayList<>();
+    private Socket socket;
+    private InputStream in;
+    private OutputStream out;
+    private Player player = new Player(0, 0, 1f, 5, 2 );
+    private boolean isRunningListener = true;
+    private boolean isRunningSender = true;
+    private ArrayList<byte[]> buffer = new ArrayList<>();
 
     public ClientHandler(Socket socket, GameWorld gameWorld) throws IOException {
         this.socket = socket;
@@ -40,6 +40,7 @@ public class ClientHandler extends Thread {
 
                     player.updateDirection(bytes[0]);
                     player.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.pFi));
+                    System.out.println(player.getEntityId());
 
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");

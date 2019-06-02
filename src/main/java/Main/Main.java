@@ -6,14 +6,13 @@ import Game.Graphics.Camera;
 import Game.Graphics.GameRenderer;
 import Game.Logic.*;
 import Game.Network.Server;
-import Game.Network.ServerService;
+import Game.Network.Client;
 import org.joml.Vector2f;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
     GameWorld gameWorld;
@@ -22,8 +21,9 @@ public class Main {
     Vector2f cursor_pos;
 
     private BufferedReader input;
-    private ServerService clientService;
+    private Client clientService;
     private Server server;
+    private boolean isServer = false;
 
     volatile public static ArrayList<TexturedEntity> buffer = new ArrayList<>();
 
@@ -185,14 +185,15 @@ public class Main {
 
                     if (string.equals("/server start")) {
                         server = new Server(gameWorld);
+                        isServer = true;
                     } else if (string.contains("/connect")) {
                         String[] str = string.split(" ");
                         if (str[1].contains(":")) {
                             String[] s = str[1].split(":");
-                            clientService = new ServerService(s[0], Integer.parseInt(s[1]));
+                            Client.init(s[0], Integer.parseInt(s[1]));
                         }
                         else
-                            clientService = new ServerService(str[1]);
+                            Client.initByIp(str[1]);
 
                         gameWorld.clearEntities();
                         isOnline = true;

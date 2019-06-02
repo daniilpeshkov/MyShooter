@@ -1,7 +1,5 @@
 package Game.Logic;
 
-import Game.Graphics.Animation;
-import Game.Graphics.Texture;
 import org.joml.Vector3f;
 
 public class Player extends TexturedEntity {
@@ -14,7 +12,7 @@ public class Player extends TexturedEntity {
     public static final byte DOWN = 0b10;
     public static final byte LEFT = 0b100;
     public static final byte RIGHT = 0b1000;
-    public static byte direction = 0;
+    public byte direction;
 
     public void updateDirection(byte direction) {
         this.direction = direction;

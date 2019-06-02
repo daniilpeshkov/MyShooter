@@ -8,25 +8,27 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
 
-public class ServerService {
+public class Client {
     static int port = 58146;
+
     private static BufferedReader input;
     private static InputStream in;
     private static OutputStream out;
     private static byte[] outputPack = new byte[5];
-    private Socket socket;
-    private String ip;
+
+    private static Socket socket;
+    private static String ip;
 
     private static boolean isRunningHandler = true;
     private static boolean isRunningReceiver = true;
 
-    public ServerService(String ip, int port) {
-        this.ip = ip;
-        this.port = port;
+    public static void init(String ip, int port) {
+        Client.ip = ip;
+        Client.port = port;
 
         try {
             System.out.println("Trying to connect...");
-            this.socket = new Socket(ip, this.port);
+            Client.socket = new Socket(ip, Client.port);
             System.out.println("Connection established");
 
             try {
@@ -34,10 +36,10 @@ public class ServerService {
                 in = socket.getInputStream();
                 out = socket.getOutputStream();
 
-                new NudesHandler().start();
+                new PackageSender().start();
                 new NudesReceiver().start();
             } catch (IOException e) {
-                this.stopService();
+                Client.stopService();
                 e.printStackTrace();
             }
         } catch (ConnectException c) {
@@ -48,8 +50,8 @@ public class ServerService {
         }
     }
 
-    public ServerService(String ip) {
-        this(ip, port);
+    public static void initByIp(String ip) {
+        init(ip, port);
     }
 
     public void moveNude(byte direction) {
@@ -60,7 +62,7 @@ public class ServerService {
         BitsFormatHandler.writeFloatBits(angle, outputPack, BitsFormatHandler.pFi);
     }
 
-    private class NudesHandler extends Thread {
+    private static class PackageSender extends Thread {
         @Override
         public void run() {
             while (isRunningHandler) {
@@ -73,11 +75,11 @@ public class ServerService {
                     e.printStackTrace();
                 }
             }
-            ServerService.this.stopService();
+            Client.stopService();
         }
     }
 
-    private class NudesReceiver extends Thread {
+    private static class NudesReceiver extends Thread {
         @Override
         public void run() {
             byte[] bytes = new byte[23];
@@ -100,11 +102,11 @@ public class ServerService {
                     e.printStackTrace();
                 }
             }
-            ServerService.this.stopService();
+            Client.stopService();
         }
     }
 
-    private void stopService() {
+    private static void stopService() {
         try {
             if (!socket.isClosed()) {
                 socket.close();
