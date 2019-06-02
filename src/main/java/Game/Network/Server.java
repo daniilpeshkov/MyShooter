@@ -72,15 +72,19 @@ public class Server {
                 if (!clientList.isEmpty()) {
                     ArrayList<byte[]> buffer = new ArrayList<>();
 
-
                     List<Entity> entities = gameWorld.getEntities();
                     int size = entities.size();
                     for (int i = 0; i < size; i++) {
-                        Entity entity = entities.get(i);
+                        Entity entity;
+                        try {
+                            entity = entities.get(i);
+                        } catch (IndexOutOfBoundsException ex) {
+                            break;
+                        }
                         if (entity != null) {
                             buffer.add(entity.getCore());
                         }
-                    }
+                   }
 
                     for (ClientHandler clientHandler : clientList) {
                         clientHandler.writeCore(buffer);
