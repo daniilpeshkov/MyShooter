@@ -48,10 +48,10 @@ public class Main {
         gameWorld = new GameWorld();
         player = new Player(5, 1, 1f, 5, 2);
 
-        gameWorld.addEntity(new RunningEnemy(gameWorld,1,1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
-        gameWorld.addEntity(new RunningEnemy(gameWorld,2,1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
-        gameWorld.addEntity(new RunningEnemy(gameWorld,1,2, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
-        gameWorld.addEntity(new RunningEnemy(gameWorld,1,-1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
+//        gameWorld.addEntity(new RunningEnemy(gameWorld,1,1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
+//        gameWorld.addEntity(new RunningEnemy(gameWorld,2,1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
+//        gameWorld.addEntity(new RunningEnemy(gameWorld,1,2, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
+//        gameWorld.addEntity(new RunningEnemy(gameWorld,1,-1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
 
         gameWorld.addEntity(player);
 
@@ -61,7 +61,7 @@ public class Main {
 //        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 10);
 
         player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4), 0,
-                300, 1, new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), 1)));
+                300,  new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), 1)));
     }
 
     private void loop() {
@@ -146,7 +146,9 @@ public class Main {
         state = Keyboard.getKeyState(Keyboard.KEY_SPACE);
         if (state == Keyboard.PRESS) {
             player.shot(gameWorld);
-            Client.fireBullets();
+            Client.fireBullets(true);
+        } else {
+            Client.fireBullets(false);
         }
 
         state = Keyboard.getKeyState(Keyboard.KEY_R);

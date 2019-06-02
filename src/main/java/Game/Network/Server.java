@@ -27,7 +27,7 @@ public class Server {
     }
 
     public Server(GameWorld gameWorld) {
-        this.gameWorld = gameWorld;
+        Server.gameWorld = gameWorld;
 
         try {
             serverSocket = new ServerSocket(SERVER_PORT);

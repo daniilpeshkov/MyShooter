@@ -64,8 +64,8 @@ public class Client {
         BitsFormatHandler.writeFloatBits(angle, outputPack, BitsFormatHandler.pFi);
     }
 
-    public static void fireBullets() {
-        outputPack[5] = 1;
+    public static void fireBullets(boolean fire) {
+        outputPack[5] = (byte) (fire? 1: 0);
     }
 
     private static class PackageSender extends Thread {

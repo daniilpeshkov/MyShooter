@@ -1,7 +1,10 @@
 package Game.Network;
 
+import Game.Logic.Bullet;
 import Game.Logic.GameWorld;
 import Game.Logic.Player;
+import Game.Logic.RangedWeapon;
+import org.joml.Vector2f;
 
 import java.io.*;
 import java.net.Socket;
@@ -25,6 +28,9 @@ public class ClientHandler extends Thread {
         in = socket.getInputStream();
         out = socket.getOutputStream();
 
+        player.equipWeapon(new RangedWeapon(1,0,4,400,
+                new Bullet(0,0,Bullet.RADIUS,1, 4000, new Vector2f(),1)));
+
         gameWorld.addEntity(player);
 
         new InputListener().start();
@@ -43,6 +49,7 @@ public class ClientHandler extends Thread {
 
                         player.updateDirection(bytes[0]);
                         player.setFi(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.pFi));
+
                         if (bytes[5] == 1) player.shot(gameWorld);
                     }
                 } catch (SocketException s) {
