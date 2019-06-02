@@ -48,17 +48,13 @@ public class Main {
         gameWorld = new GameWorld();
         player = new Player(5, 1, 1f, 5, 2);
 
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,1,1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,2,1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,1,2, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
-//        gameWorld.addEntity(new RunningEnemy(gameWorld,1,-1, 1.5f,10, 3 / 1000f, 4, new Player[]{player}));
 
         gameWorld.addEntity(player);
 
-//        WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, 4,
-//                new Player[] {player});
+        WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, 9,
+                new Player[] {player});
 
-//        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 10);
+        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 10);
 
         player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4), 0,
                 300,  new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), 1)));
