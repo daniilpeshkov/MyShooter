@@ -52,7 +52,7 @@ public class ServerService {
     }
 
     public void angleNude(int angle) {
-        outputPack[1] = (byte) (angle << 8);
+        outputPack[1] = (byte) (angle >> 8);
         outputPack[2] = (byte) (angle);
     }
 
