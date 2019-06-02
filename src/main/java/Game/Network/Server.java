@@ -17,6 +17,8 @@ public class Server {
     private boolean isRunningSender = true;
     private boolean isRunningConnections = true;
 
+    private boolean hasClients = false;
+
     public static ArrayList<ClientHandler> getClientList() {
         return clientList;
     }
@@ -31,7 +33,6 @@ public class Server {
             System.out.println("Server Address: " + serverSocket.getLocalSocketAddress());
 
             new Connect().start();
-            new MassSender().start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,6 +47,8 @@ public class Server {
                     Socket socket = Server.serverSocket.accept();
                     System.out.println("Connection accepted");
                     clientList.add(new ClientHandler(socket, gameWorld));
+
+                    if (!hasClients) new MassSender().start();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
