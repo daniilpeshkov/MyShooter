@@ -1,6 +1,5 @@
 package Game.Logic;
 
-import Game.Graphics.Animation;
 import Game.Graphics.Texture;
 import org.joml.Vector3f;
 
@@ -12,7 +11,6 @@ public class Player extends TexturedEntity {
     public static final byte RIGHT = 0b1000;
     private static final float SPEED = 4.0f / 1000f;
     RangedWeapon weapon = null;
-
 
     public Player(float x, float y, float r, int hp, Texture texture) {
         super(x, y, r, texture);

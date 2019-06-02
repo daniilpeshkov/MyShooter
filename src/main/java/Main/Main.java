@@ -5,7 +5,7 @@ import Game.Graphics.Camera;
 import Game.Graphics.GameRenderer;
 import Game.Graphics.Texture;
 import Game.Logic.*;
-import Game.Network.ClientService;
+import Game.Network.ServerService;
 import Game.Network.Server;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -25,7 +25,6 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Main {
-
     private static int H = 800;
     private static int W = 920;
     float cursor_size = 0.02f;
@@ -50,13 +49,14 @@ public class Main {
     // The window handle
     private long window;
     private BufferedReader input;
-    private ClientService clientService;
+    private ServerService clientService;
+    private Server server;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         new Main().run();
     }
 
-    public void run() throws InterruptedException {
+    public void run() {
         init();
         loop();
 
@@ -321,11 +321,11 @@ public class Main {
                     string = input.readLine();
 
                     if (string.equals("/server start")) {
-                        Server.start(gameWorld);
+                        server = new Server(gameWorld);
                     } else if (string.contains("/connect")) {
                         String[] str = string.split(" ");
                         String[] s = str[1].split(":");
-                        clientService = new ClientService(s[0], Integer.parseInt(s[1]));
+                        clientService = new ServerService(s[0], Integer.parseInt(s[1]));
                         isOnline = true;
                     }
                 } catch (IOException e) {

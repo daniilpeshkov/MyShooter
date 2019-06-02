@@ -1,5 +1,6 @@
 package Game.Network;
 
+import Game.Logic.Entity;
 import Game.Logic.GameWorld;
 
 import java.io.IOException;
@@ -10,24 +11,67 @@ import java.util.ArrayList;
 public class Server {
     static final int SERVER_PORT = 58146;
 
-    public static ArrayList<ClientHandler> clientList = new ArrayList<>();
+    private static ArrayList<ClientHandler> clientList = new ArrayList<>();
+    private static ServerSocket serverSocket;
+    private static GameWorld gameWorld;
 
-    public static void start(GameWorld gameWorld) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(SERVER_PORT);
+    public static ArrayList<ClientHandler> getClientList() {
+        return clientList;
+    }
 
-        System.out.println("Server Started");
-        System.out.println("Server LocalPort: " + serverSocket.getLocalPort());
-        System.out.println("Server Address: " + serverSocket.getInetAddress());
+    public Server(GameWorld gameWorld) {
+        this.gameWorld = gameWorld;
 
         try {
-            while (true) {
-                System.out.println("Waiting for connections...");
-                Socket socket = serverSocket.accept();
-                System.out.println("Connection accepted");
-                clientList.add(new ClientHandler(socket, gameWorld));
+            serverSocket = new ServerSocket(SERVER_PORT);
+
+            System.out.println("Server Started");
+            System.out.println("Server LocalPort: " + serverSocket.getLocalPort());
+            System.out.println("Server Address: " + serverSocket.getInetAddress());
+
+            new Connect().start();
+            new MassSender().start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class Connect extends Thread {
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    System.out.println("Waiting for connections...");
+                    Socket socket = Server.serverSocket.accept();
+                    System.out.println("Connection accepted");
+                    clientList.add(new ClientHandler(socket, gameWorld));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    serverSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        } finally {
-            serverSocket.close();
+        }
+    }
+
+    private class MassSender extends Thread {
+        @Override
+        public void run() {
+            while (!clientList.isEmpty()) {
+                ArrayList<byte[]> buffer = new ArrayList();
+
+                for (Entity entity : gameWorld.getPlayers()) {
+                    buffer.add(entity.getCore());
+                }
+
+                for (ClientHandler clientHandler : clientList) {
+                    clientHandler.writeCore(buffer);
+                }
+            }
         }
     }
 }
