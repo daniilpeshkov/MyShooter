@@ -12,6 +12,4 @@ abstract public class TexturedEntity extends Entity {
     public int getTextureID() {
         return textureID;
     }
-
-
 }

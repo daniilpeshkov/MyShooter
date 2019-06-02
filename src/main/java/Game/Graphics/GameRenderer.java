@@ -161,7 +161,6 @@ public class GameRenderer {
    }
 
    public static void init() {
-
       GLFWErrorCallback.createPrint(System.err).set();
 
       if (!glfwInit())
@@ -169,7 +168,6 @@ public class GameRenderer {
 
       glfwDefaultWindowHints();
       glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-
 
       window = glfwCreateWindow(W, H, "test", NULL, NULL);
       if (window == NULL)

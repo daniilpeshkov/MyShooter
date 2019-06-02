@@ -1,8 +1,7 @@
 package Game.GameInput;
 
-import Game.Graphics.Camera;
 import Game.Graphics.GameRenderer;
-import org.joml.Vector2f;
+
 
 import static org.lwjgl.glfw.GLFW.*;
 
