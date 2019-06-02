@@ -64,7 +64,6 @@ public class ClientHandler extends Thread {
                             out.write(i);
                         }
                         out.write(serviceCore(2));
-                        System.out.println(buffer.size());
                     }
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");

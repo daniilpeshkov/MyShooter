@@ -1,12 +1,15 @@
 package Game.Network;
 
+import Game.Graphics.Texture;
 import Game.Logic.Entity;
 import Game.Logic.GameWorld;
+import Game.Logic.TexturedEntity;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Server {
     static final int SERVER_PORT = 58146;
@@ -69,8 +72,14 @@ public class Server {
                 if (!clientList.isEmpty()) {
                     ArrayList<byte[]> buffer = new ArrayList<>();
 
-                    for (Entity entity : gameWorld.getEntities()) {
-                        buffer.add(entity.getCore());
+
+                    List<Entity> entities = gameWorld.getEntities();
+                    int size = entities.size();
+                    for (int i = 0; i < size; i++) {
+                        Entity entity = entities.get(i);
+                        if (entity != null) {
+                            buffer.add(entity.getCore());
+                        }
                     }
 
                     for (ClientHandler clientHandler : clientList) {
