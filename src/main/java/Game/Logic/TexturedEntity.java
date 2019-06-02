@@ -1,6 +1,6 @@
 package Game.Logic;
 
-abstract public class TexturedEntity extends Entity {
+public class TexturedEntity extends Entity {
 
     protected int textureID;
 
@@ -12,5 +12,15 @@ abstract public class TexturedEntity extends Entity {
 
     public int getTextureID() {
         return textureID;
+    }
+
+    @Override
+    public void update(int dTime) {
+
+    }
+
+    @Override
+    public void collidesWith(Entity entity) {
+
     }
 }

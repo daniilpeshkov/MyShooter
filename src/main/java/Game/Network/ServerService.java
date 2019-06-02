@@ -1,6 +1,8 @@
 package Game.Network;
 
 import Game.Graphics.GameRenderer;
+import Game.Logic.TexturedEntity;
+import Main.Main;
 import org.joml.Vector3f;
 
 import java.io.*;
@@ -62,7 +64,7 @@ public class ServerService {
     }
 
     public void angleNude(float angle) {
-        BitsFormatHandler.writeFloatBits(angle, outputPack, BitsFormatHandler.fi);
+        BitsFormatHandler.writeFloatBits(angle, outputPack, 1);
     }
 
     private class NudesHandler extends Thread {
@@ -91,22 +93,12 @@ public class ServerService {
                 try {
                     in.read(bytes);
 
-                    if (!hasId) {
-                        hasId = true;
+                    Main.buffer.clear();
+                    Main.buffer.add(new TexturedEntity(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x),
+                            BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y),
+                            BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.r),
+                            bytes[0]));
 
-                        id = BitsFormatHandler.readIntBits(bytes, BitsFormatHandler.id);
-                    }
-
-                    if (BitsFormatHandler.readIntBits(bytes, BitsFormatHandler.id) == id) {
-                        playerPos.x = BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x);
-                        playerPos.y = BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y);
-                    }
-
-                    Vector3f pos = new Vector3f(BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.x),
-                            BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.y), 0);
-
-                    GameRenderer.renderEntity(pos, playerPos, BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.r),
-                            BitsFormatHandler.readFloatBits(bytes, BitsFormatHandler.fi), bytes[0]);
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
                     isRunningReceiver = false;

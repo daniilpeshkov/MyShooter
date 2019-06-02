@@ -12,6 +12,8 @@ import org.joml.Vector2f;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     GameWorld gameWorld;
@@ -22,7 +24,8 @@ public class Main {
     private BufferedReader input;
     private ServerService clientService;
     private Server server;
-    private boolean isClient = false;
+
+    volatile public static ArrayList<TexturedEntity> buffer = new ArrayList<>();
 
     public static void main(String[] args) {
         new Main().run();
@@ -84,14 +87,23 @@ public class Main {
     }
 
     void render() {
-
         GameRenderer.clearWindow();
-        gameWorld.getEntities().forEach(entity -> {
-            if (entity instanceof TexturedEntity) {
-                GameRenderer.renderEntity(entity.getPos(), player.getPos(), entity.getR(), entity.getFi(), ((TexturedEntity) entity).getTextureID());
-                //TODO this parameters can be overridden from network interface because now it is just numbers
+
+        if (isOnline) {
+            if (!buffer.isEmpty()) {
+                for (int i = 1; i < buffer.size(); i++) {
+                    System.out.println("object");
+                    GameRenderer.renderEntity(buffer.get(i).getPos(), buffer.get(0).getPos(), buffer.get(i).getR(), buffer.get(i).getFi(), buffer.get(i).getTextureID());
+                }
             }
-        });
+        } else {
+            gameWorld.getEntities().forEach(entity -> {
+                if (entity instanceof TexturedEntity) {
+                    GameRenderer.renderEntity(entity.getPos(), player.getPos(), entity.getR(), entity.getFi(), ((TexturedEntity) entity).getTextureID());
+                    //TODO this parameters can be overridden from network interface because now it is just numbers
+                }
+            });
+        }
 
         GameRenderer.renderHUD(cursor_pos.x, cursor_pos.y, player.getHP());
         GameRenderer.updateScreen();
@@ -173,9 +185,7 @@ public class Main {
                         else
                             clientService = new ServerService(str[1]);
 
-                        for (Entity entity : gameWorld.getEntities()) {
-                            gameWorld.removeEntity(entity);
-                        }
+                        gameWorld.getEntities().clear();
                         isOnline = true;
                     }
                 } catch (IOException e) {

@@ -15,7 +15,7 @@ public class ClientHandler extends Thread {
     private static Player player = new Player(0, 0, 1f, 5, 2 );
     private static boolean isRunningListener = true;
     private static boolean isRunningSender = true;
-    private static ArrayList<byte[]> buffer;
+    private static ArrayList<byte[]> buffer = new ArrayList<>();
     private static boolean hasClientId = false;
 
     public ClientHandler(Socket socket, GameWorld gameWorld) throws IOException {
