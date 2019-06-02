@@ -25,7 +25,7 @@ public class Player extends TexturedEntity {
 
     public Player(float x, float y, float r, int hp, int textureID) {
         super(x, y, r, textureID);
-        healthPoint = hp;
+        setHP(hp);
     }
 
     @Override

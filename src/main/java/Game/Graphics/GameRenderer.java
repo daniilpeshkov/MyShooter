@@ -160,6 +160,19 @@ public class GameRenderer {
       glDisable(GL_TEXTURE_2D);
    }
 
+   public static void renderBackground(Vector3f cam_pos) {
+      bindTexture(11);
+
+      TexturedEntity entity = new TexturedEntity(0,0,1,11);
+
+      for (int i = (int)cam_pos.y - (int)(Camera.view_y * Camera.scale) - 4; i <= (int)cam_pos.y + (Camera.view_y * Camera.scale) + 4; i++){
+         for (int j = (int)cam_pos.x - (int)(Camera.view_x * Camera.scale) - 4; j <= cam_pos.x + (Camera.view_x * Camera.scale) + 4; j++){
+            entity.setPos(new Vector3f(j, i,0));
+            renderEntity(entity, cam_pos);
+         }
+      }
+   }
+
    public static void init() {
       GLFWErrorCallback.createPrint(System.err).set();
 

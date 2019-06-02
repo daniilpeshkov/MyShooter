@@ -7,20 +7,24 @@ import org.joml.Vector3f;
 public class Camera {
 
 
-    private static float scale = 1.0f;
+    public static float scale = 1.0f;
 
-    private static float d_scale = 1.05f;
+    public static float d_scale = 1.05f;
 
-    private static float view_x = 0, view_y = 0;
+    public static float view_x = 0, view_y = 0;
 
-    private static float MIN_VIEW = 10.0f;
+    public static float MIN_VIEW = 10.0f;
 
-    private static float aspectRatio = 0;
+    public static float aspectRatio = 0;
 
-    private static float MIN_SCALE = 0.5f;
+    public static float MIN_SCALE = 0.5f;
+
+    public static float MAX_SCALE = 2f;
 
     public static void zoomOut() {
-        scale *= d_scale;
+        if (scale * d_scale <= MAX_SCALE) {
+            scale *= d_scale;
+        }
     }
 
     public static void zoomIn() {

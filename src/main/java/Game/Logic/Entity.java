@@ -94,6 +94,7 @@ public abstract class Entity {
 
     public void addHP(int d_hp) {
         healthPoint += d_hp;
+        core[17] = (byte) healthPoint;
         if (healthPoint <= 0) {
             shouldExist = false;
         }

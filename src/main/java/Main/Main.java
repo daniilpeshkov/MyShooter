@@ -52,7 +52,7 @@ public class Main {
         WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, 4,
                 new Player[] {player});
 
-        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 10);
+//        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 10);
 
         player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4), 0,
                 300, 1, new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), 1)));
@@ -89,16 +89,17 @@ public class Main {
 
     void render() {
         GameRenderer.clearWindow();
-
         if (isOnline) {
             if (!buffer.isEmpty()) {
                 ArrayList<TexturedEntity> tmp = buffer;
+                GameRenderer.renderBackground(tmp.get(0).getPos());
                 for (int i = 1; i < tmp.size(); i++) {
                     GameRenderer.renderEntity(tmp.get(i).getPos(), tmp.get(0).getPos(), tmp.get(i).getR(), tmp.get(i).getFi(), tmp.get(i).getTextureID());
                 }
                 GameRenderer.renderHUD(cursor_pos.x, cursor_pos.y, tmp.get(0).getHP());
             }
         } else {
+            GameRenderer.renderBackground(player.getPos());
             gameWorld.getEntities().forEach(entity -> {
                 if (entity instanceof TexturedEntity) {
                     GameRenderer.renderEntity(entity.getPos(), player.getPos(), entity.getR(), entity.getFi(), ((TexturedEntity) entity).getTextureID());
