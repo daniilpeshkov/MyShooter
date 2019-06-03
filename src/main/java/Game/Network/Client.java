@@ -1,6 +1,5 @@
 package Game.Network;
 
-import Game.Graphics.Texture;
 import Game.Logic.TexturedEntity;
 import Main.Main;
 
@@ -11,21 +10,18 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 public class Client {
-    static int port = 58146;
+    private static int port = 58146;
+    private static Socket socket;
 
-    private static BufferedReader input;
+//    private static BufferedReader input;
     private static InputStream in;
     private static OutputStream out;
     private static byte[] outputPack = new byte[6];
 
-    private static Socket socket;
-    private static String ip;
-
-    private static boolean isRunningHandler = true;
+    private static boolean isRunningSender = true;
     private static boolean isRunningReceiver = true;
 
     public static void init(String ip, int port) {
-        Client.ip = ip;
         Client.port = port;
 
         try {
@@ -39,7 +35,7 @@ public class Client {
                 out = socket.getOutputStream();
 
                 new PackageSender().start();
-                new NudesReceiver().start();
+                new PackageReceiver().start();
             } catch (IOException e) {
                 Client.stopService();
                 e.printStackTrace();
@@ -48,35 +44,46 @@ public class Client {
             System.out.println("Could not connect to server");
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error");
         }
     }
 
     public static void initByIp(String ip) {
         init(ip, port);
     }
-
+    
     public static void updateDirection(byte direction) {
         outputPack[0] = direction;
     }
 
-    public static void angleNude(float angle) {
+    public static void updateAngle(float angle) {
         BitsFormatHandler.writeFloatBits(angle, outputPack, BitsFormatHandler.pFi);
     }
 
-    public static void fireBullets(boolean fire) {
-        outputPack[5] = (byte) (fire? 1: 0);
+    public static void updateBullets(boolean fire) {
+        outputPack[5] = (byte) (fire ? 1 : 0);
+    }
+
+    private static void stopService() {
+        try {
+            if (!socket.isClosed()) {
+                socket.close();
+                in.close();
+                out.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static class PackageSender extends Thread {
         @Override
         public void run() {
-            while (isRunningHandler) {
+            while (isRunningSender) {
                 try {
                     out.write(outputPack);
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
-                    isRunningHandler = false;
+                    isRunningSender = false;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -85,10 +92,7 @@ public class Client {
         }
     }
 
-    private static class NudesReceiver extends Thread {
-
-        ArrayList<TexturedEntity> a;
-
+    private static class PackageReceiver extends Thread {
         @Override
         public void run() {
             while (isRunningReceiver) {
@@ -121,18 +125,6 @@ public class Client {
                 }
             }
             Client.stopService();
-        }
-    }
-
-    private static void stopService() {
-        try {
-            if (!socket.isClosed()) {
-                socket.close();
-                in.close();
-                out.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

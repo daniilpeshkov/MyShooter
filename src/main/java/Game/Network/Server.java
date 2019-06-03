@@ -1,9 +1,7 @@
 package Game.Network;
 
-import Game.Graphics.Texture;
 import Game.Logic.Entity;
 import Game.Logic.GameWorld;
-import Game.Logic.TexturedEntity;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,19 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
-    static final int SERVER_PORT = 58146;
+    private static final int SERVER_PORT = 58146;
 
     private static ArrayList<ClientHandler> clientList = new ArrayList<>();
     private static ServerSocket serverSocket;
     private static GameWorld gameWorld;
+
     private boolean isRunningSender = true;
     private boolean isRunningConnections = true;
-
     private boolean hasClients = false;
-
-    public static ArrayList<ClientHandler> getClientList() {
-        return clientList;
-    }
 
     public Server(GameWorld gameWorld) {
         Server.gameWorld = gameWorld;
@@ -39,6 +33,10 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ArrayList<ClientHandler> getClientList() {
+        return clientList;
     }
 
     private class Connect extends Thread {
@@ -58,6 +56,7 @@ public class Server {
             } finally {
                 try {
                     serverSocket.close();
+                    isRunningConnections = false;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -84,7 +83,7 @@ public class Server {
                         if (entity != null) {
                             buffer.add(entity.getCore());
                         }
-                   }
+                    }
 
                     for (ClientHandler clientHandler : clientList) {
                         clientHandler.writeCore(buffer);

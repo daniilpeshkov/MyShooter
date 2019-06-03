@@ -7,15 +7,16 @@ import org.joml.Vector3f;
 public abstract class Entity {
 
     /* Core format:
-    * 0 - textureId
-    * 1_4 - x
-    * 5_8 - y
-    * 9_12 - r
-    * 13_16 - fi
-    * 17 - hp
-    * 22 - service field
-    * */
+     * 0 - textureId
+     * 1_4 - x
+     * 5_8 - y
+     * 9_12 - r
+     * 13_16 - fi
+     * 17 - hp
+     * 22 - service field
+     * */
 
+    public static int id = 0;
     protected Vector3f pos;
     protected float r;
     protected float fi = 0;
@@ -23,15 +24,7 @@ public abstract class Entity {
     protected boolean shouldExist = true;
     protected int healthPoint = 1;
     protected int entityId;
-    public static int id = 0;
-
     private byte[] core = new byte[23];
-
-    public byte[] getCore() {
-        return core;
-    }
-
-    public int getEntityId() { return entityId; }
 
     public Entity(float x, float y, float r) {
         pos = new Vector3f(x, y, 0);
@@ -42,6 +35,14 @@ public abstract class Entity {
         BitsFormatHandler.writeFloatBits(x, core, BitsFormatHandler.x);
         BitsFormatHandler.writeFloatBits(y, core, BitsFormatHandler.y);
         BitsFormatHandler.writeFloatBits(r, core, BitsFormatHandler.r);
+    }
+
+    public byte[] getCore() {
+        return core;
+    }
+
+    public int getEntityId() {
+        return entityId;
     }
 
     public boolean shouldExist() {
@@ -57,8 +58,13 @@ public abstract class Entity {
         BitsFormatHandler.writeFloatBits(fi, core, BitsFormatHandler.fi);
     }
 
-    public float getX() { return pos.x; }
-    public float getY() { return pos.y; }
+    public float getX() {
+        return pos.x;
+    }
+
+    public float getY() {
+        return pos.y;
+    }
 
     public void moveX(float delta) {
         pos.x += delta;
@@ -88,6 +94,7 @@ public abstract class Entity {
         velocity.x = x;
         velocity.y = y;
     }
+
     public Vector2f getVelocity() {
         return velocity;
     }
@@ -100,6 +107,10 @@ public abstract class Entity {
         }
     }
 
+    public int getHP() {
+        return healthPoint;
+    }
+
     public void setHP(int hp) {
         core[17] = (byte) hp;
 
@@ -107,10 +118,6 @@ public abstract class Entity {
         if (healthPoint <= 0) {
             shouldExist = false;
         }
-    }
-
-    public int getHP() {
-        return healthPoint;
     }
 
     public abstract void collidesWith(Entity entity);

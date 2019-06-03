@@ -13,13 +13,16 @@ import java.util.ArrayList;
 
 public class ClientHandler extends Thread {
     private Socket socket;
+
     private InputStream in;
     private OutputStream out;
-    private Player player = new Player(0, 0, 1f, 5, 2 );
-    private boolean isRunningListener = true;
+
+    private boolean isRunningReceiver = true;
     private boolean isRunningSender = true;
+
     private ArrayList<byte[]> buffer = new ArrayList<>();
     private GameWorld gameWorld;
+    private Player player = new Player(0, 0, 1f, 5, 2);
 
     public ClientHandler(Socket socket, GameWorld gameWorld) throws IOException {
         this.socket = socket;
@@ -28,19 +31,42 @@ public class ClientHandler extends Thread {
         in = socket.getInputStream();
         out = socket.getOutputStream();
 
-        player.equipWeapon(new RangedWeapon(1,0,4,400,
-                new Bullet(0,0,Bullet.RADIUS,1, 4000, new Vector2f(),1)));
+        player.equipWeapon(new RangedWeapon(1, 0, 4, 400,
+                new Bullet(0, 0, Bullet.RADIUS, 1, 4000, new Vector2f(), 1)));
 
         gameWorld.addEntity(player);
 
-        new InputListener().start();
+        new InputReceiver().start();
         new CoreSender().start();
     }
 
-    private class InputListener extends Thread {
+    public byte[] serviceCore(int mode) {
+        byte[] mas = new byte[23];
+        mas[22] = (byte) mode;
+        return mas;
+    }
+
+    public void writeCore(ArrayList<byte[]> cores) {
+        buffer = cores;
+    }
+
+    private void stopService() {
+        try {
+            if (!socket.isClosed()) {
+                in.close();
+                out.close();
+                socket.close();
+                Server.getClientList().remove(this);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class InputReceiver extends Thread {
         @Override
         public void run() {
-            while (isRunningListener) {
+            while (isRunningReceiver) {
                 try {
                     byte[] bytes = new byte[6];
 
@@ -54,7 +80,7 @@ public class ClientHandler extends Thread {
                     }
                 } catch (SocketException s) {
                     System.out.println("Connection is closed");
-                    isRunningListener = false;
+                    isRunningReceiver = false;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -83,29 +109,6 @@ public class ClientHandler extends Thread {
                 }
             }
             ClientHandler.this.stopService();
-        }
-    }
-
-    public byte[] serviceCore(int mode) {
-        byte[] mas = new byte[23];
-        mas[22] = (byte) mode;
-        return mas;
-    }
-
-    public void writeCore(ArrayList<byte[]> cores) {
-        buffer = cores;
-    }
-
-    private void stopService() {
-        try {
-            if (!socket.isClosed()) {
-                in.close();
-                out.close();
-                socket.close();
-                Server.getClientList().remove(this);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

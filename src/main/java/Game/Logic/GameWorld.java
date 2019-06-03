@@ -10,7 +10,7 @@ public class GameWorld {
     }
 
     public void addEntity(Entity entity) {
-        entities.add(entity);   
+        entities.add(entity);
     }
 
     public void clearEntities() {
@@ -65,7 +65,7 @@ public class GameWorld {
         for (int i = 0; i < entities.size(); i++) {
             Entity entity = entities.get(i);
             if (entity instanceof Player) {
-                ((Player)entity).updateVelocity();
+                ((Player) entity).updateVelocity();
             }
             entity.moveY(entity.getVelocity().y * delta_t);
             entity.moveX(entity.getVelocity().x * delta_t);

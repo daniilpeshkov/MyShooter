@@ -142,9 +142,9 @@ public class Main {
         state = Keyboard.getKeyState(Keyboard.KEY_SPACE);
         if (state == Keyboard.PRESS) {
             player.shot(gameWorld);
-            Client.fireBullets(true);
+            Client.updateBullets(true);
         } else {
-            Client.fireBullets(false);
+            Client.updateBullets(false);
         }
 
         state = Keyboard.getKeyState(Keyboard.KEY_R);
@@ -167,7 +167,7 @@ public class Main {
         float angle = (float) Math.atan2(cursorPos.y, cursorPos.x * Camera.getAspectRatio());
 
         if (isOnline) {
-            Client.angleNude(angle);
+            Client.updateAngle(angle);
         } else {
             player.setFi(angle);
         }
