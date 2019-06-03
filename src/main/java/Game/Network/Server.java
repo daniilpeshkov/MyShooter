@@ -101,12 +101,6 @@ public class Server {
                     for (ClientHandler clientHandler : clientList) {
                         clientHandler.writeCore(buffer);
                     }
-
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }
