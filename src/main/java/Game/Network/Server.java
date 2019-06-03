@@ -15,10 +15,15 @@ public class Server {
     private static ArrayList<ClientHandler> clientList = new ArrayList<>();
     private static ServerSocket serverSocket;
     private static GameWorld gameWorld;
+    private static Thread t;
 
     private boolean isRunningSender = true;
     private boolean isRunningConnections = true;
     private boolean hasClients = false;
+
+    public void terminateThread() {
+        t.interrupt();
+    }
 
     public void terminate() {
         isRunningConnections = false;
@@ -36,7 +41,8 @@ public class Server {
             System.out.println("Server Opened");
             System.out.println("Server Address: " + serverSocket.getLocalSocketAddress());
 
-            new Connect().start();
+            t = new Connect();
+            t.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,6 +100,12 @@ public class Server {
 
                     for (ClientHandler clientHandler : clientList) {
                         clientHandler.writeCore(buffer);
+                    }
+
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }

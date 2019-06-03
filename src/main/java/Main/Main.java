@@ -160,12 +160,14 @@ public class Main {
         if (state == Keyboard.PRESS) {
             if (isServer) {
                 server.terminate();
+                server.terminateThread();
             }
             else if (isOnline){
                 Client.terminate();
             }
 
             GameRenderer.setWindowsShouldClose();
+            System.exit(1);
         }
 
         Vector2f cursorPos = GameRenderer.getCursorPos();
