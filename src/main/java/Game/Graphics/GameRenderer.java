@@ -11,6 +11,8 @@ import org.lwjgl.system.MemoryStack;
 
 import java.io.File;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,14 +35,22 @@ public class GameRenderer {
     static float CURSOR_SIZE = 0.06f;
 
     public static void loadTextures() {
+        System.out.println("Loading textures:");
         File texturePath = new File("src\\main\\resources");
         textureMap = new HashMap();
-        for (File a : texturePath.listFiles()) {
-            String name = a.getName();
-            int number = Integer.valueOf(name.substring(0, name.indexOf('.')));
-            textureMap.put(number, Texture.genTexture(a.getAbsolutePath()));
-            System.out.println("Texture " + number + " loaded");
+        try {
+            for (File a : texturePath.listFiles()) {
+                String name = a.getName();
+                int number = Integer.valueOf(name.substring(0, name.indexOf('.')));
+                textureMap.put(number, Texture.genTexture(a.getAbsolutePath()));
+                System.out.printf("     Texture %3d loaded\n", number);
+            }
+        } catch (IOException ex) {
+            System.err.println("Missing textures!");
+            GameRenderer.destroy();
+            System.exit(-1);
         }
+        System.out.println("All textures loaded successfully!");
     }
 
     public static void setWindowsShouldClose() {

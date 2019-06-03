@@ -32,6 +32,9 @@ public class GameWorld {
 
     public void clearEntities() {
         entities.clear();
+
+        entities.addAll(players);
+
     }
 
     public void update(int delta_t) {
@@ -103,7 +106,6 @@ public class GameWorld {
         float fi = (float) (Math.random() * Math.PI * 2);
         addEntity(new RunningEnemy(this, (float)(SPAWN_RANGE * Math.cos(fi)), (float)(SPAWN_RANGE * Math.sin(fi)),1,
                 5, 3f/ 1000, 9, players));
-
     }
 
 

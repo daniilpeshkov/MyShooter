@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -61,24 +62,17 @@ public class Texture {
         }
     }
 
-    public static Texture genTexture(String fileName) {
+    public static Texture genTexture(String fileName) throws IOException {
         //load png file
         PNGDecoder decoder = null;
-        try {
+
             decoder = new PNGDecoder(new FileInputStream(new File(fileName)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         //create a byte buffer big enough to store RGBA values
         ByteBuffer buffer = ByteBuffer.allocateDirect(4 * decoder.getWidth() * decoder.getHeight());
 
         //decode
-        try {
             decoder.decode(buffer, decoder.getWidth() * 4, PNGDecoder.Format.RGBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         //flip the buffer so its ready to read
         buffer.flip();

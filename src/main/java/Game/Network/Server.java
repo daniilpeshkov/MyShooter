@@ -24,7 +24,7 @@ public class Server {
         isRunningConnections = false;
         isRunningSender = false;
 
-        clientList.forEach(clientHandler -> terminate());
+        clientList.forEach(ClientHandler::terminate);
     }
 
     public Server(GameWorld gameWorld) {

@@ -48,11 +48,9 @@ public class Main {
         gameWorld = new GameWorld();
         gameWorld = new GameWorld();
         player = new Player(5, 1, 1f, 5, 2);
-
-
         gameWorld.addEntity(player);
 
-        player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4), 0,
+        player.equipWeapon(new RangedWeapon(3, (float) (Math.PI / 4), 0,
                 300,  new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), 1)));
     }
 
@@ -145,7 +143,7 @@ public class Main {
 
         state = Keyboard.getKeyState(Keyboard.KEY_R);
         if (state == Keyboard.PRESS) {
-            initGame();
+            gameWorld.clearEntities();
         }
 
         state = Keyboard.getKeyState(Keyboard.KEY_UP);

@@ -101,3 +101,12 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-zstd:$lwjglVersion:$lwjglNatives"
     implementation "org.joml:joml:${jomlVersion}"
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'Main.Main'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
