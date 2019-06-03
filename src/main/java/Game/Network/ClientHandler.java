@@ -11,7 +11,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-public class ClientHandler extends Thread {
+public class ClientHandler {
     private Socket socket;
 
     private InputStream in;
@@ -23,6 +23,11 @@ public class ClientHandler extends Thread {
     private ArrayList<byte[]> buffer = new ArrayList<>();
     private GameWorld gameWorld;
     private Player player = new Player(0, 0, 1f, 5, 2);
+
+    public void terminate() {
+        isRunningReceiver = false;
+        isRunningSender = false;
+    }
 
     public ClientHandler(Socket socket, GameWorld gameWorld) throws IOException {
         this.socket = socket;

@@ -18,14 +18,15 @@ import java.util.ArrayList;
 
 public class Main {
     GameWorld gameWorld;
-    boolean isOnline = false;
     private Player player;
     Vector2f cursor_pos;
 
     private BufferedReader input;
     private Client clientService;
     private Server server;
+
     private boolean isServer = false;
+    boolean isOnline = false;
 
     volatile public static ArrayList<TexturedEntity> buffer = new ArrayList<>();
 
@@ -157,6 +158,18 @@ public class Main {
             Camera.zoomOut();
         }
 
+        state = Keyboard.getKeyState(Keyboard.KEY_ESC);
+        if (state == Keyboard.PRESS) {
+            if (isServer) {
+                server.terminate();
+            }
+            else if (isOnline){
+                Client.terminate();
+            }
+
+            GameRenderer.setWindowsShouldClose();
+        }
+
         Vector2f cursorPos = GameRenderer.getCursorPos();
 
         float angle = (float) Math.atan2(cursorPos.y, cursorPos.x * Camera.getAspectRatio());
@@ -181,6 +194,7 @@ public class Main {
                     string = input.readLine();
 
                     if (string.equals("/server start")) {
+                        System.out.println("Server Started");
                         server = new Server(gameWorld);
                         isServer = true;
                     } else if (string.contains("/connect")) {

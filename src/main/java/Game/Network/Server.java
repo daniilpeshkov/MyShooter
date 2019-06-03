@@ -20,13 +20,20 @@ public class Server {
     private boolean isRunningConnections = true;
     private boolean hasClients = false;
 
+    public void terminate() {
+        isRunningConnections = false;
+        isRunningSender = false;
+
+        clientList.forEach(clientHandler -> terminate());
+    }
+
     public Server(GameWorld gameWorld) {
         Server.gameWorld = gameWorld;
 
         try {
             serverSocket = new ServerSocket(SERVER_PORT);
 
-            System.out.println("Server Started");
+            System.out.println("Server Opened");
             System.out.println("Server Address: " + serverSocket.getLocalSocketAddress());
 
             new Connect().start();

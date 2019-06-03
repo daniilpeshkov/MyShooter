@@ -15,6 +15,7 @@ public class Keyboard {
     public static final int KEY_UP = GLFW_KEY_UP;
     public static final int KEY_DOWN = GLFW_KEY_DOWN;
     public static final int KEY_R = GLFW_KEY_R;
+    public static final int KEY_ESC = GLFW_KEY_ESCAPE;
 
     public static final int PRESS = GLFW_PRESS;
 

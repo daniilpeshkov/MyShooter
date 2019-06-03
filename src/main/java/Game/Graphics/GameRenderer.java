@@ -43,6 +43,10 @@ public class GameRenderer {
         }
     }
 
+    public static void setWindowsShouldClose() {
+        glfwSetWindowShouldClose(window, true);
+    }
+
     public static void bindTexture(int id) {
         textureMap.get(id).bind();
     }

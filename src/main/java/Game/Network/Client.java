@@ -21,6 +21,11 @@ public class Client {
     private static boolean isRunningSender = true;
     private static boolean isRunningReceiver = true;
 
+    public static void terminate() {
+        isRunningReceiver = false;
+        isRunningSender = false;
+    }
+
     public static void init(String ip, int port) {
         Client.port = port;
 
