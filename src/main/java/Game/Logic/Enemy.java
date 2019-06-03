@@ -1,20 +1,23 @@
 package Game.Logic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Enemy extends TexturedEntity {
 
-    protected Player[] players;
+    protected List<Player> players;
     protected RangedWeapon weapon = null;
     protected GameWorld world;
     protected float speed = 0;
 
-    public Enemy(GameWorld world, float x, float y, float r, int hp, int textureID, Player[] players) {
+    public Enemy(GameWorld world, float x, float y, float r, int hp, int textureID, List<Player> players) {
         super(x, y, r, textureID);
         this.players = players;
         healthPoint = hp;
         this.world = world;
     }
 
-    public Enemy(GameWorld world, float x, float y, float r, int hp, float speed, int textureID, Player[] players) {
+    public Enemy(GameWorld world, float x, float y, float r, int hp, float speed, int textureID, List<Player> players) {
         super(x, y, r, textureID);
         this.players = players;
         healthPoint = hp;

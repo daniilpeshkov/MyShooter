@@ -51,11 +51,6 @@ public class Main {
 
         gameWorld.addEntity(player);
 
-        WormSegment worm = new WormSegment(gameWorld, 0, 5,  1f, 1, 5f / 1000.0f, 9,
-                new Player[] {player});
-
-        WormSegment.generateWorm(gameWorld, worm, (float) (Math.PI / 2), 10);
-
         player.equipWeapon(new RangedWeapon(1, (float) (Math.PI / 4), 0,
                 300,  new Bullet(0, 0, 0.3f, 1, 4000, new Vector2f(0, 0), 1)));
     }

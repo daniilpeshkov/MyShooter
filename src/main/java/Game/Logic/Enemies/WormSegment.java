@@ -5,6 +5,8 @@ import Game.Logic.Entity;
 import Game.Logic.GameWorld;
 import Game.Logic.Player;
 
+import java.util.List;
+
 public class WormSegment extends Enemy {
 
     //to the head
@@ -12,7 +14,7 @@ public class WormSegment extends Enemy {
 
     private WormSegment nextSegment = null;
 
-    public WormSegment(GameWorld world, float x, float y, float r, int hp, float speed, int textureID, Player[] players) {
+    public WormSegment(GameWorld world, float x, float y, float r, int hp, float speed, int textureID, List<Player> players) {
         super(world, x, y, r, hp, speed, textureID, players);
     }
 
@@ -43,7 +45,7 @@ public class WormSegment extends Enemy {
         if (previousSegment != null) {
             follow(previousSegment);
         } else {
-            follow(players[0]);
+            follow(players.get(0));
         }
 
     }
