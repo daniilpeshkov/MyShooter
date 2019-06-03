@@ -1,15 +1,32 @@
 package Game.Logic;
 
+import Game.Logic.Enemies.RunningEnemy;
+import Main.Main;
+
 import java.util.*;
 
 public class GameWorld {
+
+    public static int SPAWN_COOLDOWN = 1000;
+    public float SPAWN_RANGE = 50f;
+    public int timePassed;
+
     private List<Entity> entities = new ArrayList<>();
+
+    private List<Player> players = new ArrayList<>();
+
+    public List<Player> getPlayers()  {
+        return players;
+    }
 
     public List<Entity> getEntities() {
         return entities;
     }
 
     public void addEntity(Entity entity) {
+        if (entity instanceof Player) {
+            players.add((Player) entity);
+        }
         entities.add(entity);
     }
 
@@ -18,6 +35,16 @@ public class GameWorld {
     }
 
     public void update(int delta_t) {
+
+        timePassed += delta_t;
+
+        if (timePassed > SPAWN_COOLDOWN) {
+            timePassed = 0;
+            spawnEnemy();
+        }
+
+
+
         List<Entity> entitiesToRemove = new ArrayList<>();
         for (int i = 0; i < entities.size(); i++) {
             Entity entity = entities.get(i);
@@ -70,6 +97,13 @@ public class GameWorld {
             entity.moveY(entity.getVelocity().y * delta_t);
             entity.moveX(entity.getVelocity().x * delta_t);
         }
+    }
+
+    private void spawnEnemy() {
+        float fi = (float) (Math.random() * Math.PI * 2);
+        addEntity(new RunningEnemy(this, (float)(SPAWN_RANGE * Math.cos(fi)), (float)(SPAWN_RANGE * Math.sin(fi)),1,
+                5, 3f/ 1000, 9, players));
+
     }
 
 
