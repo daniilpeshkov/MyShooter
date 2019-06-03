@@ -36,7 +36,7 @@ public class ClientHandler {
         in = socket.getInputStream();
         out = socket.getOutputStream();
 
-        player.equipWeapon(new RangedWeapon(1, 0, 4, 400,
+        player.equipWeapon(new RangedWeapon(3, 0, 4, 400,
                 new Bullet(0, 0, Bullet.RADIUS, 1, 4000, new Vector2f(), 1)));
 
         gameWorld.addEntity(player);
